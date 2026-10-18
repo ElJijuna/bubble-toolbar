@@ -1,20 +1,11 @@
-import React, { forwardRef } from 'react';
+import type { CSSProperties } from 'react';
+import { forwardRef } from 'react';
 import type { BubbleAreaProps } from '../types';
 import { formatPx } from '../utils/styles';
 
 export const BubbleArea = forwardRef<HTMLDivElement, BubbleAreaProps>(
-  (
-    {
-      children,
-      minWidth = 120,
-      maxWidth,
-      className = '',
-      style,
-      ...rest
-    },
-    ref
-  ) => {
-    const areaStyles: React.CSSProperties = {
+  ({ children, minWidth = 120, maxWidth, className = '', style, ...rest }, ref) => {
+    const areaStyles: CSSProperties = {
       display: 'inline-flex',
       alignItems: 'center',
       minWidth: formatPx(minWidth),
@@ -26,17 +17,11 @@ export const BubbleArea = forwardRef<HTMLDivElement, BubbleAreaProps>(
     };
 
     return (
-      <div
-        ref={ref}
-        className={`bubble-area ${className}`.trim()}
-        style={areaStyles}
-        {...rest}
-      >
+      <div ref={ref} className={`bubble-area ${className}`.trim()} style={areaStyles} {...rest}>
         {children}
       </div>
     );
-  }
+  },
 );
 
 BubbleArea.displayName = 'BubbleArea';
-

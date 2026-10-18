@@ -1,20 +1,18 @@
-export { BubbleToolbar } from './BubbleToolbar';
-export type { BubbleToolbarComponent } from './BubbleToolbar';
 export { BubbleGroup } from './BubbleGroup';
-export { BubbleIconButton } from './components/BubbleIconButton';
+export type { BubbleToolbarComponent } from './BubbleToolbar';
+export { BubbleToolbar } from './BubbleToolbar';
 export { BubbleArea } from './components/BubbleArea';
+export { BubbleIconButton } from './components/BubbleIconButton';
 export { BubbleToolbarContext, useBubbleToolbar } from './context';
-export { getValidChildren } from './utils/children';
-export { resolveSize, formatPx, getGlassStyles } from './utils/styles';
-
 export type {
-  BubbleToolbarProps,
+  BubbleAreaProps,
   BubbleGroupProps,
   BubbleIconButtonProps,
-  BubbleAreaProps,
-  BubbleToolbarTheme,
-  BubbleToolbarPosition,
-  BubbleToolbarSize,
   BubbleShape,
+  BubbleToolbarPosition,
+  BubbleToolbarProps,
+  BubbleToolbarSize,
+  BubbleToolbarTheme,
 } from './types';
-
+export { getValidChildren } from './utils/children';
+export { formatPx, getGlassStyles, resolveSize } from './utils/styles';

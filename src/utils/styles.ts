@@ -1,14 +1,15 @@
 import type { CSSProperties } from 'react';
-import type { BubbleToolbarTheme, BubbleToolbarSize } from '../types';
+import type { BubbleToolbarSize, BubbleToolbarTheme } from '../types';
 
 export function resolveSize(size: BubbleToolbarSize): number {
-  if (typeof size === 'number') return size;
+  if (typeof size === 'number') {
+    return size;
+  }
   switch (size) {
     case 'sm':
       return 40;
     case 'lg':
       return 56;
-    case 'md':
     default:
       return 48;
   }
@@ -23,7 +24,7 @@ export function getGlassStyles(
   blurred: boolean,
   blurAmount: number | string,
   bordered: boolean,
-  shadow: boolean | string
+  shadow: boolean | string,
 ): CSSProperties {
   const blurVal = formatPx(blurAmount);
 
@@ -48,7 +49,6 @@ export function getGlassStyles(
       borderColor = 'var(--bubble-border, rgba(0, 0, 0, 0.08))';
       color = 'var(--bubble-fg, #18181b)';
       break;
-    case 'glass':
     default:
       // Neutral luminous frosted glass
       background = blurred ? 'rgba(255, 255, 255, 0.65)' : 'rgba(255, 255, 255, 0.92)';
@@ -61,8 +61,8 @@ export function getGlassStyles(
     typeof shadow === 'string'
       ? shadow
       : shadow
-      ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06)'
-      : 'none';
+        ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06)'
+        : 'none';
 
   return {
     backgroundColor: background,
@@ -74,4 +74,3 @@ export function getGlassStyles(
     transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
   };
 }
-

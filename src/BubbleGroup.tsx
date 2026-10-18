@@ -1,8 +1,9 @@
-import React, { forwardRef } from 'react';
-import type { BubbleGroupProps, BubbleShape } from './types';
+import type { CSSProperties } from 'react';
+import { forwardRef } from 'react';
 import { useBubbleToolbar } from './context';
+import type { BubbleGroupProps, BubbleShape } from './types';
 import { getValidChildren } from './utils/children';
-import { resolveSize, formatPx, getGlassStyles } from './utils/styles';
+import { formatPx, getGlassStyles, resolveSize } from './utils/styles';
 
 export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
   (
@@ -15,7 +16,7 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
       style,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const context = useBubbleToolbar();
 
@@ -25,24 +26,22 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
     // Morphological logic:
     // 1 node => circle
     // > 1 node => pill / rounded rectangle
-    const computedShape: BubbleShape =
-      explicitShape || (count <= 1 ? 'circle' : 'pill');
+    const computedShape: BubbleShape = explicitShape || (count <= 1 ? 'circle' : 'pill');
 
     const effectiveSize = resolveSize(explicitSize || context.size);
-    const effectiveItemGap =
-      explicitItemGap !== undefined ? explicitItemGap : context.itemGap;
+    const effectiveItemGap = explicitItemGap !== undefined ? explicitItemGap : context.itemGap;
 
     const glassStyles = getGlassStyles(
       context.theme,
       context.blurred,
       context.blurAmount,
       context.bordered,
-      context.shadow
+      context.shadow,
     );
 
     const isCircle = computedShape === 'circle';
 
-    const groupStyles: React.CSSProperties = {
+    const groupStyles: CSSProperties = {
       ...glassStyles,
       height: `${effectiveSize}px`,
       boxSizing: 'border-box',
@@ -71,15 +70,12 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
       ...style,
     };
 
-    const combinedClassName = [
-      'bubble-group',
-      `bubble-group--${computedShape}`,
-      className,
-    ]
+    const combinedClassName = ['bubble-group', `bubble-group--${computedShape}`, className]
       .filter(Boolean)
       .join(' ');
 
     return (
+      // biome-ignore lint/a11y/useSemanticElements: This toolbar group is not a form fieldset and exposes an HTMLDivElement ref.
       <div
         ref={ref}
         role="group"
@@ -92,8 +88,7 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
         {validChildren}
       </div>
     );
-  }
+  },
 );
 
 BubbleGroup.displayName = 'BubbleGroup';
-

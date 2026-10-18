@@ -1,18 +1,41 @@
-import React, { forwardRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { forwardRef, useState } from 'react';
 import type { BubbleIconButtonProps } from '../types';
 
 /**
  * Standard inline SVG icons for quick prototyping out-of-the-box
  */
-const ICONS: Record<string, React.ReactNode> = {
+const ICONS: Record<string, ReactNode> = {
   search: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <circle cx="11" cy="11" r="8" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
   ),
   theme: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <circle cx="12" cy="12" r="5" />
       <line x1="12" y1="1" x2="12" y2="3" />
       <line x1="12" y1="21" x2="12" y2="23" />
@@ -25,25 +48,69 @@ const ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   chat: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   ),
   notifications: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
       <path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
   ),
   logo: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polygon points="12 2 2 7 12 12 22 7 12 2" />
       <polyline points="2 17 12 22 22 17" />
       <polyline points="2 12 12 17 22 12" />
     </svg>
   ),
   close: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
@@ -66,14 +133,14 @@ export const BubbleIconButton = forwardRef<HTMLButtonElement, BubbleIconButtonPr
       ariaLabel,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [isHovered, setIsHovered] = useState(false);
 
     const iconContent = icon || (name ? ICONS[name] : null) || children;
     const computedAriaLabel = ariaLabel || tooltip || (name ? `${name} button` : 'button');
 
-    const buttonStyles: React.CSSProperties = {
+    const buttonStyles: CSSProperties = {
       position: 'relative',
       display: 'inline-flex',
       alignItems: 'center',
@@ -85,8 +152,8 @@ export const BubbleIconButton = forwardRef<HTMLButtonElement, BubbleIconButtonPr
       background: active
         ? 'rgba(0, 0, 0, 0.08)'
         : isHovered
-        ? 'rgba(0, 0, 0, 0.05)'
-        : 'transparent',
+          ? 'rgba(0, 0, 0, 0.05)'
+          : 'transparent',
       color: 'inherit',
       cursor: 'pointer',
       padding: 0,
@@ -98,7 +165,7 @@ export const BubbleIconButton = forwardRef<HTMLButtonElement, BubbleIconButtonPr
       ...style,
     };
 
-    const badgeStyles: React.CSSProperties = {
+    const badgeStyles: CSSProperties = {
       position: 'absolute',
       top: '4px',
       right: '4px',
@@ -143,8 +210,7 @@ export const BubbleIconButton = forwardRef<HTMLButtonElement, BubbleIconButtonPr
         ) : null}
       </button>
     );
-  }
+  },
 );
 
 BubbleIconButton.displayName = 'BubbleIconButton';
-

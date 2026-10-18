@@ -1,21 +1,20 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { Children, Fragment, isValidElement } from 'react';
 
 /**
  * Returns an array of non-null, non-undefined, non-boolean child elements.
- * Unpacks React.Fragment if encountered at the top level.
+ * Unpacks Fragment if encountered at the top level.
  */
 export function getValidChildren(children: ReactNode): ReactNode[] {
   const result: ReactNode[] = [];
 
-  React.Children.forEach(children, (child) => {
+  Children.forEach(children, (child) => {
     if (child === null || child === undefined || typeof child === 'boolean') {
       return;
     }
 
-    if (React.isValidElement(child) && child.type === React.Fragment) {
-      const fragmentChildren = getValidChildren(
-        (child.props as { children?: ReactNode }).children
-      );
+    if (isValidElement(child) && child.type === Fragment) {
+      const fragmentChildren = getValidChildren((child.props as { children?: ReactNode }).children);
       result.push(...fragmentChildren);
     } else {
       result.push(child);
@@ -24,4 +23,3 @@ export function getValidChildren(children: ReactNode): ReactNode[] {
 
   return result;
 }
-

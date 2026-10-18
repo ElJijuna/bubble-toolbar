@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { BubbleToolbarTheme, BubbleToolbarSize } from './types';
+import type { BubbleToolbarSize, BubbleToolbarTheme } from './types';
 
 export interface BubbleToolbarContextValue {
   size: BubbleToolbarSize;
@@ -26,4 +26,3 @@ export const BubbleToolbarContext = createContext<BubbleToolbarContextValue>(def
 export const useBubbleToolbar = (): BubbleToolbarContextValue => {
   return useContext(BubbleToolbarContext);
 };
-

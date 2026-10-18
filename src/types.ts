@@ -1,4 +1,4 @@
-import type { CSSProperties, HTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, CSSProperties, HTMLAttributes, ReactNode } from 'react';
 
 export type BubbleToolbarTheme = 'light' | 'dark' | 'auto' | 'glass';
 export type BubbleToolbarPosition = 'bottom' | 'top' | 'static' | 'custom';

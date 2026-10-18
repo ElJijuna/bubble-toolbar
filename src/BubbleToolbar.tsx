@@ -1,13 +1,13 @@
-import React, { forwardRef, useMemo } from 'react';
-import type { BubbleToolbarProps } from './types';
-import { BubbleToolbarContext, BubbleToolbarContextValue } from './context';
+import type { CSSProperties, ForwardRefExoticComponent, RefAttributes } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { BubbleGroup } from './BubbleGroup';
+import type { BubbleToolbarContextValue } from './context';
+import { BubbleToolbarContext } from './context';
+import type { BubbleToolbarProps } from './types';
 import { formatPx } from './utils/styles';
 
 export interface BubbleToolbarComponent
-  extends React.ForwardRefExoticComponent<
-    BubbleToolbarProps & React.RefAttributes<HTMLDivElement>
-  > {
+  extends ForwardRefExoticComponent<BubbleToolbarProps & RefAttributes<HTMLDivElement>> {
   Group: typeof BubbleGroup;
 }
 
@@ -30,7 +30,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       ariaLabel = 'Toolbar',
       ...rest
     },
-    ref
+    ref,
   ) => {
     const contextValue = useMemo<BubbleToolbarContextValue>(
       () => ({
@@ -42,11 +42,11 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         bordered,
         shadow,
       }),
-      [size, theme, blurred, blurAmount, itemGap, bordered, shadow]
+      [size, theme, blurred, blurAmount, itemGap, bordered, shadow],
     );
 
     // Compute positioning styles
-    const getPositionStyles = (): React.CSSProperties => {
+    const getPositionStyles = (): CSSProperties => {
       switch (position) {
         case 'bottom':
           return {
@@ -68,13 +68,12 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
           return {
             position: 'relative',
           };
-        case 'custom':
         default:
           return {};
       }
     };
 
-    const containerStyles: React.CSSProperties = {
+    const containerStyles: CSSProperties = {
       ...getPositionStyles(),
       display: 'inline-flex',
       alignItems: 'center',
@@ -112,18 +111,16 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         >
           {groups && groups.length > 0
             ? groups.map((groupItems, index) => (
-                <BubbleGroup key={index}>
-                  {groupItems}
-                </BubbleGroup>
+                // biome-ignore lint/suspicious/noArrayIndexKey: The groups array API identifies groups by position; use compound children for keyed groups.
+                <BubbleGroup key={index}>{groupItems}</BubbleGroup>
               ))
             : null}
           {children}
         </div>
       </BubbleToolbarContext.Provider>
     );
-  }
+  },
 ) as BubbleToolbarComponent;
 
 BubbleToolbar.displayName = 'BubbleToolbar';
 BubbleToolbar.Group = BubbleGroup;
-

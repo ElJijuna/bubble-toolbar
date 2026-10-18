@@ -57,7 +57,9 @@
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.2s ease;
 }
 
 .bubble-group:hover {
@@ -87,7 +89,10 @@
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
-  transition: background-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    color 0.15s ease;
 }
 
 .bubble-icon-button:hover {
@@ -113,13 +118,12 @@
 /* Media Query: Auto Dark Theme */
 @media (prefers-color-scheme: dark) {
   .bubble-toolbar--auto .bubble-group {
-    background-color: var(--bubble-dark-bg) !important;
-    border-color: var(--bubble-dark-border) !important;
-    color: #f4f4f5 !important;
+    --bubble-bg: var(--bubble-dark-bg);
+    --bubble-border: var(--bubble-dark-border);
+    --bubble-fg: #f4f4f5;
   }
 
   .bubble-toolbar--auto .bubble-icon-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
 }
-
