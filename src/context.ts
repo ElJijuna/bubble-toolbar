@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
-import type { BubbleToolbarSize, BubbleToolbarTheme } from './types';
+import type { BubbleActivityProps, BubbleToolbarSize, BubbleToolbarTheme } from './types';
 
-export interface BubbleToolbarContextValue {
+export interface BubbleToolbarContextValue extends BubbleActivityProps {
   size: BubbleToolbarSize;
   theme: BubbleToolbarTheme;
   blurred: boolean;

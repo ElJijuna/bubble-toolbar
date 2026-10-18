@@ -25,6 +25,9 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       itemGap = 8,
       bordered = true,
       shadow = true,
+      busy = false,
+      activityColors,
+      activityDuration,
       className = '',
       style,
       ariaLabel = 'Toolbar',
@@ -41,8 +44,22 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         itemGap,
         bordered,
         shadow,
+        busy,
+        activityColors,
+        activityDuration,
       }),
-      [size, theme, blurred, blurAmount, itemGap, bordered, shadow],
+      [
+        size,
+        theme,
+        blurred,
+        blurAmount,
+        itemGap,
+        bordered,
+        shadow,
+        busy,
+        activityColors,
+        activityDuration,
+      ],
     );
 
     // Compute positioning styles

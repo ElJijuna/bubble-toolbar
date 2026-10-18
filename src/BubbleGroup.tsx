@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { forwardRef } from 'react';
+import { BubbleActivityContext, useGroupActivity } from './activity';
 import { useBubbleToolbar } from './context';
 import type { BubbleGroupProps, BubbleShape } from './types';
 import { getValidChildren } from './utils/children';
@@ -12,6 +13,9 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
       shape: explicitShape,
       size: explicitSize,
       itemGap: explicitItemGap,
+      busy = false,
+      activityColors,
+      activityDuration,
       className = '',
       style,
       ...rest
@@ -19,6 +23,9 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
     ref,
   ) => {
     const context = useBubbleToolbar();
+    const activity = useGroupActivity(Boolean(context.busy || busy));
+    const colors = activityColors ?? context.activityColors ?? ['#22d3ee', '#8b5cf6', '#ec4899'];
+    const duration = activityDuration ?? context.activityDuration ?? 2.4;
 
     const validChildren = getValidChildren(children);
     const count = validChildren.length;
@@ -41,7 +48,11 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
 
     const isCircle = computedShape === 'circle';
 
-    const groupStyles: CSSProperties = {
+    const groupStyles: CSSProperties & Record<`--bubble-activity-${string}`, string> = {
+      '--bubble-activity-color-1': colors[0],
+      '--bubble-activity-color-2': colors[1],
+      '--bubble-activity-color-3': colors[2],
+      '--bubble-activity-duration': `${Number.isFinite(duration) && duration > 0 ? duration : 2.4}s`,
       ...glassStyles,
       height: `${effectiveSize}px`,
       boxSizing: 'border-box',
@@ -70,23 +81,31 @@ export const BubbleGroup = forwardRef<HTMLDivElement, BubbleGroupProps>(
       ...style,
     };
 
-    const combinedClassName = ['bubble-group', `bubble-group--${computedShape}`, className]
+    const combinedClassName = [
+      'bubble-group',
+      `bubble-group--${computedShape}`,
+      activity.isBusy && 'bubble-group--busy',
+      className,
+    ]
       .filter(Boolean)
       .join(' ');
 
     return (
-      // biome-ignore lint/a11y/useSemanticElements: This toolbar group is not a form fieldset and exposes an HTMLDivElement ref.
-      <div
-        ref={ref}
-        role="group"
-        className={combinedClassName}
-        style={groupStyles}
-        data-shape={computedShape}
-        data-items-count={count}
-        {...rest}
-      >
-        {validChildren}
-      </div>
+      <BubbleActivityContext.Provider value={activity}>
+        {/* biome-ignore lint/a11y/useSemanticElements: This toolbar group is not a form fieldset and exposes an HTMLDivElement ref. */}
+        <div
+          ref={ref}
+          role="group"
+          className={combinedClassName}
+          style={groupStyles}
+          data-shape={computedShape}
+          data-items-count={count}
+          {...rest}
+          aria-busy={activity.isBusy}
+        >
+          {validChildren}
+        </div>
+      </BubbleActivityContext.Provider>
     );
   },
 );

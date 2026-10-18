@@ -88,6 +88,73 @@ const FloatingMenu = () => (
 
 The components include inline glass styles. Import the stylesheet for additional styling, including automatic dark theme support and focus indicators.
 
+## Async activity
+
+Import `bubble-toolbar/styles.css` to enable the rotating border and glow. Activity is indeterminate: it does not disable controls, cancel tasks, or display success or error states.
+
+### External control
+
+Set `busy` on the toolbar to illuminate every group, or on a group to illuminate only that bubble:
+
+```tsx
+<BubbleToolbar busy={isSaving}>
+  <BubbleToolbar.Group>
+    <BubbleIconButton name="logo" />
+  </BubbleToolbar.Group>
+  <BubbleToolbar.Group busy={isSearching}>
+    <BubbleIconButton name="search" />
+    <BubbleArea>Search results</BubbleArea>
+  </BubbleToolbar.Group>
+</BubbleToolbar>
+```
+
+### Track tasks from inside a group
+
+`useBubbleActivity()` returns `{ isBusy, run }`. It targets the nearest group, including groups created through the `groups` prop. Calling it outside a group throws a descriptive error.
+
+```tsx
+import { useState } from 'react';
+import { BubbleIconButton, BubbleToolbar, useBubbleActivity } from 'bubble-toolbar';
+import 'bubble-toolbar/styles.css';
+
+const SaveAction = ({ save }: { save: () => Promise<void> }) => {
+  const { isBusy, run } = useBubbleActivity();
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <BubbleIconButton
+      name="chat"
+      tooltip={error ?? (isBusy ? 'Saving…' : 'Save')}
+      onClick={async () => {
+        setError(null);
+        try {
+          await run(save);
+        } catch {
+          setError('Save failed. Try again.');
+        }
+      }}
+    />
+  );
+};
+
+// Render SaveAction inside a group:
+// <BubbleToolbar.Group><SaveAction save={saveChanges} /></BubbleToolbar.Group>
+```
+
+`run<T>(task: () => Promise<T>): Promise<T>` returns the task's result and propagates synchronous exceptions and rejected promises. Handle errors in your application. Concurrent tasks keep the group busy until the last task settles. Unmounting the group does not cancel the consumer's task.
+
+A group is busy when **any** of the following is true: the toolbar's `busy` prop, the group's `busy` prop, or a pending local task. Passing `busy={false}` does not hide activity from another source. Each group exposes its effective state through `aria-busy`.
+
+Both toolbar and group accept these props; group appearance overrides the toolbar defaults:
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `busy` | `boolean` | `false` | Adds externally managed activity. |
+| `activityColors` | `readonly [string, string, string]` | `['#22d3ee', '#8b5cf6', '#ec4899']` | Three CSS colors for the gradient. |
+| `activityDuration` | `number` | `2.4` | Seconds per rotation; non-positive or non-finite values fall back to 2.4. |
+
+The effect follows circular and pill shapes without changing their dimensions. With `prefers-reduced-motion: reduce`, the border remains visible and static. Browsers without animated custom property support retain a static gradient; browsers without CSS masking retain a static colored border.
+
 ## Adaptive shapes
 
 | Group content | Shape | Behavior |

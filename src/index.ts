@@ -1,3 +1,5 @@
+export type { BubbleActivityValue } from './activity';
+export { useBubbleActivity } from './activity';
 export { BubbleGroup } from './BubbleGroup';
 export type { BubbleToolbarComponent } from './BubbleToolbar';
 export { BubbleToolbar } from './BubbleToolbar';
@@ -5,6 +7,7 @@ export { BubbleArea } from './components/BubbleArea';
 export { BubbleIconButton } from './components/BubbleIconButton';
 export { BubbleToolbarContext, useBubbleToolbar } from './context';
 export type {
+  BubbleActivityProps,
   BubbleAreaProps,
   BubbleGroupProps,
   BubbleIconButtonProps,

@@ -5,7 +5,19 @@ export type BubbleToolbarPosition = 'bottom' | 'top' | 'static' | 'custom';
 export type BubbleToolbarSize = 'sm' | 'md' | 'lg' | number;
 export type BubbleShape = 'circle' | 'pill';
 
-export interface BubbleToolbarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+/** Activity appearance inherited by each bubble group. */
+export interface BubbleActivityProps {
+  /** Adds external activity; false does not hide pending local tasks. */
+  busy?: boolean;
+  /** Three CSS colors used by the rotating activity border. */
+  activityColors?: readonly [string, string, string];
+  /** Seconds per rotation. Defaults to 2.4. */
+  activityDuration?: number;
+}
+
+export interface BubbleToolbarProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
+    BubbleActivityProps {
   /**
    * Definition of items by groups.
    * Example:
@@ -96,7 +108,7 @@ export interface BubbleToolbarProps extends Omit<HTMLAttributes<HTMLDivElement>,
   ariaLabel?: string;
 }
 
-export interface BubbleGroupProps extends HTMLAttributes<HTMLDivElement> {
+export interface BubbleGroupProps extends HTMLAttributes<HTMLDivElement>, BubbleActivityProps {
   /**
    * Elements inside this group.
    * 1 node renders as a circle.
