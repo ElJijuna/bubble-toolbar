@@ -1,8 +1,8 @@
-import { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
+import { createRef } from 'react';
 import { BubbleToolbar } from '../src/BubbleToolbar';
-import { BubbleIconButton } from '../src/components/BubbleIconButton';
 import { BubbleArea } from '../src/components/BubbleArea';
+import { BubbleIconButton } from '../src/components/BubbleIconButton';
 
 describe('BubbleToolbar', () => {
   it('renders groups array structure exactly matching user specification', () => {
@@ -15,12 +15,15 @@ describe('BubbleToolbar', () => {
       <BubbleToolbar
         groups={[
           [<Logo key="logo" />],
-          [<BubbleIconButton key="search" name="search" />, <BubbleArea key="area">Search...</BubbleArea>],
+          [
+            <BubbleIconButton key="search" name="search" />,
+            <BubbleArea key="area">Search...</BubbleArea>,
+          ],
           [<BubbleIconButton key="theme" name="theme" />],
           [<BubbleIconButton key="chat" name="chat" />],
           [<BubbleIconButton key="notif" name="notifications" />],
         ]}
-      />
+      />,
     );
 
     const toolbar = screen.getByRole('toolbar');
@@ -61,10 +64,10 @@ describe('BubbleToolbar', () => {
           <span>Logo</span>
         </BubbleToolbar.Group>
         <BubbleToolbar.Group>
-          <button>Action 1</button>
-          <button>Action 2</button>
+          <button type="button">Action 1</button>
+          <button type="button">Action 2</button>
         </BubbleToolbar.Group>
-      </BubbleToolbar>
+      </BubbleToolbar>,
     );
 
     const groups = screen.getAllByRole('group');
@@ -74,9 +77,7 @@ describe('BubbleToolbar', () => {
   });
 
   it('applies floating bottom positioning styles by default', () => {
-    render(
-      <BubbleToolbar groups={[[<span key="1">Item</span>]]} />
-    );
+    render(<BubbleToolbar groups={[[<span key="1">Item</span>]]} />);
 
     const toolbar = screen.getByRole('toolbar');
     expect(toolbar.style.position).toBe('fixed');
@@ -87,9 +88,7 @@ describe('BubbleToolbar', () => {
   });
 
   it('supports top positioning', () => {
-    render(
-      <BubbleToolbar position="top" groups={[[<span key="1">Item</span>]]} />
-    );
+    render(<BubbleToolbar position="top" groups={[[<span key="1">Item</span>]]} />);
 
     const toolbar = screen.getByRole('toolbar');
     expect(toolbar.style.position).toBe('fixed');
@@ -98,9 +97,7 @@ describe('BubbleToolbar', () => {
   });
 
   it('supports static positioning', () => {
-    render(
-      <BubbleToolbar position="static" groups={[[<span key="1">Item</span>]]} />
-    );
+    render(<BubbleToolbar position="static" groups={[[<span key="1">Item</span>]]} />);
 
     const toolbar = screen.getByRole('toolbar');
     expect(toolbar.style.position).toBe('relative');
@@ -113,7 +110,7 @@ describe('BubbleToolbar', () => {
         blurred={true}
         blurAmount={20}
         groups={[[<span key="1">Item</span>]]}
-      />
+      />,
     );
 
     const group = screen.getByRole('group');
@@ -123,12 +120,7 @@ describe('BubbleToolbar', () => {
   });
 
   it('supports dark theme', () => {
-    render(
-      <BubbleToolbar
-        theme="dark"
-        groups={[[<span key="1">Item</span>]]}
-      />
-    );
+    render(<BubbleToolbar theme="dark" groups={[[<span key="1">Item</span>]]} />);
 
     const group = screen.getByRole('group');
     expect(group.style.color).toBe('rgb(244, 244, 245)');
@@ -136,9 +128,7 @@ describe('BubbleToolbar', () => {
 
   it('forwards ref to the toolbar container element', () => {
     const ref = createRef<HTMLDivElement>();
-    render(
-      <BubbleToolbar ref={ref} groups={[[<span key="1">Item</span>]]} />
-    );
+    render(<BubbleToolbar ref={ref} groups={[[<span key="1">Item</span>]]} />);
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
     expect(ref.current).toHaveAttribute('role', 'toolbar');
@@ -146,14 +136,19 @@ describe('BubbleToolbar', () => {
 
   it('supports custom positioning and custom size sm and lg', () => {
     const { rerender } = render(
-      <BubbleToolbar position="custom" size="sm" groups={[[<span key="1">Small</span>]]} />
+      <BubbleToolbar position="custom" size="sm" groups={[[<span key="1">Small</span>]]} />,
     );
 
     let group = screen.getByRole('group');
     expect(group.style.height).toBe('40px');
 
     rerender(
-      <BubbleToolbar size="lg" theme="auto" shadow="0 4px 12px rgba(0,0,0,0.2)" groups={[[<span key="1">Large</span>]]} />
+      <BubbleToolbar
+        size="lg"
+        theme="auto"
+        shadow="0 4px 12px rgba(0,0,0,0.2)"
+        groups={[[<span key="1">Large</span>]]}
+      />,
     );
 
     group = screen.getByRole('group');
@@ -169,7 +164,7 @@ describe('BubbleToolbar', () => {
         blurred={false}
         bordered={false}
         groups={[[<span key="1">Plain</span>]]}
-      />
+      />,
     );
 
     const group = screen.getByRole('group');

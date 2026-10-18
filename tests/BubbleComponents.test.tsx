@@ -1,7 +1,7 @@
+import { fireEvent, render, screen } from '@testing-library/react';
 import { createRef } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { BubbleIconButton } from '../src/components/BubbleIconButton';
 import { BubbleArea } from '../src/components/BubbleArea';
+import { BubbleIconButton } from '../src/components/BubbleIconButton';
 
 describe('BubbleIconButton', () => {
   it('renders standard icon by name and handles click', () => {
@@ -20,7 +20,7 @@ describe('BubbleIconButton', () => {
       <BubbleIconButton
         icon={<span data-testid="custom-svg">SVG</span>}
         tooltip="Custom Tooltip"
-      />
+      />,
     );
 
     const btn = screen.getByRole('button', { name: /custom tooltip/i });
@@ -46,11 +46,7 @@ describe('BubbleIconButton', () => {
     const handleLeave = jest.fn();
 
     render(
-      <BubbleIconButton
-        name="search"
-        onMouseEnter={handleEnter}
-        onMouseLeave={handleLeave}
-      />
+      <BubbleIconButton name="search" onMouseEnter={handleEnter} onMouseLeave={handleLeave} />,
     );
 
     const btn = screen.getByRole('button');
@@ -67,7 +63,7 @@ describe('BubbleArea', () => {
     render(
       <BubbleArea minWidth={150} maxWidth={300}>
         <input placeholder="Type something..." />
-      </BubbleArea>
+      </BubbleArea>,
     );
 
     const input = screen.getByPlaceholderText('Type something...');
@@ -81,7 +77,7 @@ describe('BubbleArea', () => {
     render(
       <BubbleArea ref={ref}>
         <span>Area Content</span>
-      </BubbleArea>
+      </BubbleArea>,
     );
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);

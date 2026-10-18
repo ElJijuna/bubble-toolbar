@@ -1,5 +1,5 @@
-import React, { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
+import { createRef, Fragment } from 'react';
 import { BubbleGroup } from '../src/BubbleGroup';
 import { BubbleToolbarContext, defaultContextValue } from '../src/context';
 
@@ -8,7 +8,7 @@ describe('BubbleGroup', () => {
     render(
       <BubbleGroup>
         <span data-testid="single-item">Logo</span>
-      </BubbleGroup>
+      </BubbleGroup>,
     );
 
     const group = screen.getByRole('group');
@@ -27,9 +27,11 @@ describe('BubbleGroup', () => {
   it('renders as a pill / rounded rectangle when it has more than 1 child', () => {
     render(
       <BubbleGroup>
-        <button data-testid="search-btn">Search</button>
+        <button type="button" data-testid="search-btn">
+          Search
+        </button>
         <span data-testid="area">ToolbarArea</span>
-      </BubbleGroup>
+      </BubbleGroup>,
     );
 
     const group = screen.getByRole('group');
@@ -52,7 +54,7 @@ describe('BubbleGroup', () => {
         <span data-testid="valid-item">Only One</span>
         {false}
         {undefined}
-      </BubbleGroup>
+      </BubbleGroup>,
     );
 
     const group = screen.getByRole('group');
@@ -63,11 +65,11 @@ describe('BubbleGroup', () => {
   it('unpacks React.Fragment children correctly', () => {
     render(
       <BubbleGroup>
-        <React.Fragment>
+        <Fragment key="items">
           <span>Item 1</span>
           <span>Item 2</span>
-        </React.Fragment>
-      </BubbleGroup>
+        </Fragment>
+      </BubbleGroup>,
     );
 
     const group = screen.getByRole('group');
@@ -79,7 +81,7 @@ describe('BubbleGroup', () => {
     render(
       <BubbleGroup shape="pill">
         <span>Single Item Forced Pill</span>
-      </BubbleGroup>
+      </BubbleGroup>,
     );
 
     const group = screen.getByRole('group');
@@ -92,7 +94,7 @@ describe('BubbleGroup', () => {
     render(
       <BubbleGroup ref={ref}>
         <span>Item</span>
-      </BubbleGroup>
+      </BubbleGroup>,
     );
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
@@ -105,7 +107,7 @@ describe('BubbleGroup', () => {
         <BubbleGroup>
           <span>Large Item</span>
         </BubbleGroup>
-      </BubbleToolbarContext.Provider>
+      </BubbleToolbarContext.Provider>,
     );
 
     const group = screen.getByRole('group');
@@ -116,13 +118,9 @@ describe('BubbleGroup', () => {
 
   it('supports custom numeric size and custom style / className', () => {
     render(
-      <BubbleGroup
-        size={60}
-        className="custom-bubble"
-        style={{ opacity: 0.8 }}
-      >
+      <BubbleGroup size={60} className="custom-bubble" style={{ opacity: 0.8 }}>
         <span>Custom</span>
-      </BubbleGroup>
+      </BubbleGroup>,
     );
 
     const group = screen.getByRole('group');
@@ -132,4 +130,3 @@ describe('BubbleGroup', () => {
     expect(group.className).toContain('custom-bubble');
   });
 });
-
