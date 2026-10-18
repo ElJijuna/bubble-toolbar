@@ -1,0 +1,125 @@
+/**
+ * Bubble Toolbar - Frosted Glass & Responsive Layout
+ */
+
+:root {
+  --bubble-size-sm: 40px;
+  --bubble-size-md: 48px;
+  --bubble-size-lg: 56px;
+  --bubble-blur: 16px;
+  --bubble-glass-bg: rgba(255, 255, 255, 0.65);
+  --bubble-glass-border: rgba(255, 255, 255, 0.35);
+  --bubble-glass-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --bubble-dark-bg: rgba(24, 24, 27, 0.72);
+  --bubble-dark-border: rgba(255, 255, 255, 0.12);
+}
+
+/* Toolbar container */
+.bubble-toolbar {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-x;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.bubble-toolbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Positions */
+.bubble-toolbar--bottom {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.bubble-toolbar--top {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.bubble-toolbar--static {
+  position: relative;
+}
+
+/* Bubble Groups */
+.bubble-group {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.bubble-group:hover {
+  transform: translateY(-2px);
+}
+
+/* Circle shape: 1 node */
+.bubble-group--circle {
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Pill shape: > 1 nodes */
+.bubble-group--pill {
+  border-radius: 9999px;
+  flex-direction: row;
+}
+
+/* Icon Button */
+.bubble-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.bubble-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.bubble-icon-button:active {
+  transform: scale(0.94);
+}
+
+.bubble-icon-button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Area */
+.bubble-area {
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 auto;
+}
+
+/* Media Query: Auto Dark Theme */
+@media (prefers-color-scheme: dark) {
+  .bubble-toolbar--auto .bubble-group {
+    background-color: var(--bubble-dark-bg) !important;
+    border-color: var(--bubble-dark-border) !important;
+    color: #f4f4f5 !important;
+  }
+
+  .bubble-toolbar--auto .bubble-icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
