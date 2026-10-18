@@ -1,208 +1,198 @@
 # 🫧 Bubble Toolbar
 
-> Componente de barra flotante responsiva con efecto **blurred glass** (glassmorphism) para **React 18 y 19** con **TypeScript**, organizado por grupos y con morfología adaptativa inteligente (círculo ↔ cápsula).
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](./package.json)
+[![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./tsconfig.json)
+[![Storybook](https://img.shields.io/badge/Storybook-10-FF4785?logo=storybook&logoColor=white)](./.storybook/main.ts)
+[![ESLint](https://img.shields.io/badge/ESLint-10-4B32C3?logo=eslint&logoColor=white)](./eslint.config.mjs)
+[![Biome](https://img.shields.io/badge/Biome-2-60A5FA?logo=biome&logoColor=white)](./biome.json)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 
-![Bubble Toolbar Morphology](https://raw.githubusercontent.com/ElJijuna/bubble-toolbar/main/assets/banner.png)
+A responsive floating toolbar with a frosted glass effect for React 18 and 19. Built with TypeScript, it arranges content into groups that adapt from circles to pills based on their children.
 
----
+## Features
 
-## ✨ Características
+- **React 18 and 19 support:** typed components with forwarded refs.
+- **Group-based composition:** pass arrays of nodes or use `BubbleToolbar.Group` children.
+- **Adaptive shapes:** a single child creates a circle; multiple children create a pill.
+- **Frosted glass:** background blur, subtle borders, soft shadows, and glass, light, dark, or automatic themes.
+- **Responsive layout:** fixed or relative positioning, automatic centering, and horizontal scrolling on smaller screens.
+- **Tests and examples:** Jest and React Testing Library tests, plus interactive Storybook stories.
 
-- ⚛️ **Compatibilidad Total**: Diseñado y probado con **React 18** y **React 19** usando `forwardRef` y tipado estricto en TypeScript.
-- 🔮 **Definición por Grupos**: Define la barra pasando arreglos de nodos o mediante sintaxis de componentes compuestos (`BubbleToolbar.Group`).
-- 🔘 **Morfología Adaptativa Dinámica**:
-  - **1 solo nodo** $\rightarrow$ se renderiza como un **círculo** perfecto (`aspect-ratio: 1/1`).
-  - **Más de 1 nodo** $\rightarrow$ se convierte en un **rectángulo redondeado (cápsula / pill)**, respetando la curvatura en los extremos para mantener el equilibrio visual exacto con las burbujas circulares.
-- 🪟 **Blurred Glass (Frosted Glassmorphism)**: Efecto translúcido con desenfoque de fondo (`backdrop-filter: blur(16px)`), bordes frosted, sombras suaves y soporte para temas claro, oscuro o automático.
-- 📱 **Flotante y Responsivo**: Posicionamiento fijo o relativo, centrado automático y desplazamiento horizontal suave sin barras de scroll invasivas en pantallas móviles.
-- 🧪 **100% Testeado con Jest**: Suite integral de pruebas unitarias y de integración con `@testing-library/react`.
-
----
-
-## 📦 Instalación
+## Installation
 
 ```bash
 npm install bubble-toolbar
-# o con yarn / pnpm / bun
+# Or use pnpm:
 pnpm add bubble-toolbar
 ```
 
----
+## Quick start
 
-## 🚀 Uso Rápido
-
-### Ejemplo con definición por grupos (prop `groups`)
-
-Tal como en tu especificación:
+### Group arrays
 
 ```tsx
-import React from 'react';
-import { BubbleToolbar, BubbleIconButton, BubbleArea } from 'bubble-toolbar';
-import 'bubble-toolbar/styles.css'; // Opcional, los estilos inline glass ya vienen incluidos
+import { BubbleArea, BubbleIconButton, BubbleToolbar } from 'bubble-toolbar';
+import 'bubble-toolbar/styles.css';
 
-function App() {
-  return (
-    <BubbleToolbar
-      position="bottom"
-      theme="glass"
-      groups={[
-        // Grupo 1: 1 solo nodo => Círculo
-        [<Logo key="logo" />],
+const App = () => (
+  <BubbleToolbar
+    position="bottom"
+    theme="glass"
+    groups={[
+      // One child: circle.
+      [<BubbleIconButton key="logo" name="logo" />],
 
-        // Grupo 2: Múltiples nodos => Rectángulo redondeado (Pill)
-        [
-          <BubbleIconButton key="search" name="search" />,
-          <BubbleArea key="area">
-            <input placeholder="Buscar o escribir /" />
-          </BubbleArea>,
-        ],
+      // Multiple children: pill.
+      [
+        <BubbleIconButton key="search" name="search" />,
+        <BubbleArea key="area">
+          <input aria-label="Search" placeholder="Search or type /" />
+        </BubbleArea>,
+      ],
 
-        // Grupos 3, 4 y 5: 1 solo nodo cada uno => Círculos
-        [<BubbleIconButton key="theme" name="theme" />],
-        [<BubbleIconButton key="chat" name="chat" />],
-        [<BubbleIconButton key="notif" name="notifications" badge={3} />],
-      ]}
-    />
-  );
-}
+      // Each group below becomes a circle.
+      [<BubbleIconButton key="theme" name="theme" />],
+      [<BubbleIconButton key="chat" name="chat" />],
+      [<BubbleIconButton key="notifications" name="notifications" badge={3} />],
+    ]}
+  />
+);
 ```
 
-### Ejemplo con Componentes Compuestos (`BubbleToolbar.Group`)
+### Compound components
 
 ```tsx
-import { BubbleToolbar, BubbleIconButton, BubbleArea } from 'bubble-toolbar';
+import { BubbleArea, BubbleIconButton, BubbleToolbar } from 'bubble-toolbar';
+import 'bubble-toolbar/styles.css';
 
-function FloatingMenu() {
-  return (
-    <BubbleToolbar position="bottom" theme="glass">
-      {/* 1 nodo: Círculo */}
-      <BubbleToolbar.Group>
-        <Logo />
-      </BubbleToolbar.Group>
+const FloatingMenu = () => (
+  <BubbleToolbar position="bottom" theme="glass">
+    <BubbleToolbar.Group>
+      <BubbleIconButton name="logo" />
+    </BubbleToolbar.Group>
 
-      {/* 2 nodos: Rectángulo redondeado (Cápsula) */}
-      <BubbleToolbar.Group>
-        <BubbleIconButton name="search" />
-        <BubbleArea>
-          <input placeholder="Buscar..." />
-        </BubbleArea>
-      </BubbleToolbar.Group>
+    <BubbleToolbar.Group>
+      <BubbleIconButton name="search" />
+      <BubbleArea>
+        <input aria-label="Search" placeholder="Search…" />
+      </BubbleArea>
+    </BubbleToolbar.Group>
 
-      {/* 1 nodo: Círculo */}
-      <BubbleToolbar.Group>
-        <BubbleIconButton name="theme" />
-      </BubbleToolbar.Group>
-    </BubbleToolbar>
-  );
-}
+    <BubbleToolbar.Group>
+      <BubbleIconButton name="theme" />
+    </BubbleToolbar.Group>
+  </BubbleToolbar>
+);
 ```
 
----
+The components include inline glass styles. Import the stylesheet for additional styling, including automatic dark theme support and focus indicators.
 
-## 📐 Morfología Visual
+## Adaptive shapes
 
-| Contenido del Grupo | Forma Resultante | Comportamiento |
-| :--- | :---: | :--- |
-| **1 Nodo** (`[<Logo />]`) | 🟡 **Círculo** | Ancho y alto fijados a `--bubble-size` (por defecto `48px`). `aspect-ratio: 1 / 1`. Contenido centrado. |
-| **> 1 Nodo** (`[<Search />, <Area />]`) | 💊 **Cápsula / Pill** | Altura fijada a `--bubble-size`, ancho dinámico según contenido con padding lateral. Los extremos redondeados coinciden exactamente con el diámetro de las burbujas circulares adyacentes para una armonía visual simétrica. |
+| Group content | Shape | Behavior |
+| :--- | :--- | :--- |
+| One child | Circle | Equal width and height, with centered content. The default diameter is 48px. |
+| Multiple children | Pill | Fixed height, content-based width, horizontal spacing, and rounded ends. |
 
----
+Use the `shape` prop on a group to override its automatic shape.
 
-## 🛠️ API Reference
+## API reference
 
 ### `<BubbleToolbar />`
 
-| Prop | Tipo | Por defecto | Descripción |
-| :--- | :--- | :---: | :--- |
-| `groups` | `ReactNode[][]` | `undefined` | Arreglo de arreglos con los nodos agrupados. |
-| `children` | `ReactNode` | `undefined` | Elementos JSX hijos (ej. `<BubbleToolbar.Group>`). |
-| `position` | `'bottom' \| 'top' \| 'static' \| 'custom'` | `'bottom'` | Posicionamiento de la barra en pantalla. |
-| `theme` | `'glass' \| 'light' \| 'dark' \| 'auto'` | `'glass'` | Estilo visual y translucidez. |
-| `size` | `'sm' \| 'md' \| 'lg' \| number` | `'md'` | Altura de la barra / diámetro de los círculos (40px, 48px, 56px o px numérico). |
-| `blurred` | `boolean` | `true` | Activa el efecto frosted glass (`backdrop-filter: blur`). |
-| `blurAmount`| `number \| string` | `16` | Cantidad de desenfoque en píxeles. |
-| `groupGap` | `number \| string` | `8` | Espacio entre cada burbuja/grupo. |
-| `itemGap` | `number \| string` | `8` | Espacio entre elementos dentro de un grupo cápsula. |
-| `bordered` | `boolean` | `true` | Muestra bordes sutiles con brillo frosted. |
-| `shadow` | `boolean \| string` | `true` | Sombra flotante proyectada. |
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `groups` | `ReactNode[][]` | `undefined` | Arrays of grouped nodes. |
+| `children` | `ReactNode` | `undefined` | Children such as `<BubbleToolbar.Group>`. |
+| `position` | `'bottom' \| 'top' \| 'static' \| 'custom'` | `'bottom'` | Toolbar placement. Use `style` to set custom positioning. |
+| `theme` | `'glass' \| 'light' \| 'dark' \| 'auto'` | `'glass'` | Visual theme. |
+| `size` | `'sm' \| 'md' \| 'lg' \| number` | `'md'` | Group height and circle diameter: 40px, 48px, 56px, or a custom pixel value. |
+| `blurred` | `boolean` | `true` | Enables background blur. |
+| `blurAmount` | `number \| string` | `16` | Blur radius in pixels or a CSS length. |
+| `groupGap` | `number \| string` | `8` | Space between groups, in pixels or a CSS length. |
+| `itemGap` | `number \| string` | `8` | Space between children within a pill. |
+| `bordered` | `boolean` | `true` | Shows subtle borders. |
+| `shadow` | `boolean \| string` | `true` | Enables the default shadow or supplies a custom CSS shadow. |
+| `ariaLabel` | `string` | `'Toolbar'` | Accessible toolbar label. |
 
-### `<BubbleGroup />` (o `<BubbleToolbar.Group />`)
+### `<BubbleGroup />` / `<BubbleToolbar.Group />`
 
-| Prop | Tipo | Por defecto | Descripción |
-| :--- | :--- | :---: | :--- |
-| `children` | `ReactNode` | `undefined` | Nodos que contiene el grupo. |
-| `shape` | `'circle' \| 'pill'` | Automático | Fuerza una forma específica omitiendo el cálculo automático por cantidad de nodos. |
-| `size` | `'sm' \| 'md' \| 'lg' \| number` | Heredado | Permite sobrescribir el tamaño para este grupo. |
-| `itemGap` | `number \| string` | Heredado | Espaciado entre elementos del grupo. |
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `children` | `ReactNode` | `undefined` | Group content. |
+| `shape` | `'circle' \| 'pill'` | Automatic | Overrides the shape inferred from the child count. |
+| `size` | `'sm' \| 'md' \| 'lg' \| number` | Inherited | Overrides the toolbar's group size. |
+| `itemGap` | `number \| string` | Inherited | Overrides spacing between children. |
 
 ### `<BubbleIconButton />`
 
-| Prop | Tipo | Por defecto | Descripción |
-| :--- | :--- | :---: | :--- |
-| `name` | `'search' \| 'theme' \| 'chat' \| 'notifications' \| 'logo' \| 'close'` | `undefined` | Nombre del icono vectorial SVG pre-integrado. |
-| `icon` | `ReactNode` | `undefined` | Icono SVG personalizado. |
-| `badge` | `ReactNode \| number \| string` | `undefined` | Indicador o contador de notificación. |
-| `active` | `boolean` | `false` | Estado activo / seleccionado. |
-| `tooltip` | `string` | `undefined` | Texto emergente y accesible. |
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `name` | `string` | `undefined` | Built-in icon: `search`, `theme`, `chat`, `notifications`, `logo`, or `close`. |
+| `icon` | `ReactNode` | `undefined` | Custom icon content. |
+| `badge` | `ReactNode` | `undefined` | Notification indicator or count. |
+| `active` | `boolean` | `false` | Applies active styling. |
+| `tooltip` | `string` | `undefined` | Tooltip and fallback accessible label. |
+| `ariaLabel` | `string` | Derived | Explicit accessible label; falls back to the tooltip or icon name. |
 
----
+### `<BubbleArea />`
 
-## 🧪 Pruebas con Jest
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `children` | `ReactNode` | `undefined` | Content such as a search input, label, or slider. |
+| `minWidth` | `number \| string` | `120` | Minimum width in pixels or a CSS length. |
+| `maxWidth` | `number \| string` | `undefined` | Maximum width in pixels or a CSS length. |
 
-ESLint 10 usa `createEslintConfig` de `super-configs/eslint` con los presets de React y Jest.
-Biome extiende `super-configs/biome` para lint, formato y organización de imports.
+All components accept `className`, `style`, and standard attributes for their underlying element. Toolbar, group, and area refs point to a `div`; icon button refs point to a `button`.
 
-```bash
-npm run lint          # ESLint sin advertencias
-npm run lint:fix      # Correcciones automáticas de ESLint
-npm run format:check  # Verificar con Biome
-npm run format        # Aplicar correcciones de Biome
-npm run check         # ESLint, Biome, TypeScript y Jest
-```
-
-El entorno de stories usa Storybook 10 y Vite 8.3.4. Instala las dependencias con `npm ci`.
-
-Ejecutar la suite completa de pruebas:
+## Development
 
 ```bash
-npm test
+npm ci
 ```
 
-Ejecutar con reporte de cobertura de código:
+ESLint 10 uses `createEslintConfig` from `super-configs/eslint` with the React and Jest presets. Biome extends `super-configs/biome` for linting, formatting, and import organization.
 
 ```bash
-npm run test:coverage
+npm run lint          # Run ESLint with zero warnings allowed
+npm run lint:fix      # Apply ESLint fixes
+npm run format:check  # Check with Biome
+npm run format        # Apply Biome fixes
+npm run typecheck     # Check TypeScript types
+npm test              # Run Jest tests
+npm run test:coverage # Generate a coverage report
+npm run check         # Run ESLint, Biome, TypeScript, and Jest
 ```
 
-Ejecutar chequeo de tipos en TypeScript:
+### Storybook
 
-```bash
-npm run typecheck
-```
-
-### Ejecutar Storybook en local
-
-Para explorar visualmente los componentes, probar el cambio dinámico de formas y los temas:
+The story environment uses Storybook 10 and Vite 8.3.4. Explore components, themes, and adaptive shapes locally:
 
 ```bash
 npm run storybook
 ```
 
-Compilar Storybook estático:
+Build the static Storybook site:
 
 ```bash
 npm run build-storybook
 ```
 
-Compilar la librería para distribución (ESM, CJS y `.d.ts`):
+### Library build
+
+Build the library for distribution as ESM, CommonJS, and TypeScript declarations:
 
 ```bash
 npm run build
 ```
 
----
+Preview the npm package contents:
 
-## 📄 Licencia
+```bash
+npm pack --dry-run
+```
 
-MIT © ElJijuna
+## License
 
+[MIT](./LICENSE) © ElJijuna
