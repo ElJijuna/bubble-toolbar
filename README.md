@@ -149,6 +149,19 @@ function FloatingMenu() {
 
 ## 🧪 Pruebas con Jest
 
+ESLint 10 usa `createEslintConfig` de `super-configs/eslint` con los presets de React y Jest.
+Biome extiende `super-configs/biome` para lint, formato y organización de imports.
+
+```bash
+npm run lint          # ESLint sin advertencias
+npm run lint:fix      # Correcciones automáticas de ESLint
+npm run format:check  # Verificar con Biome
+npm run format        # Aplicar correcciones de Biome
+npm run check         # ESLint, Biome, TypeScript y Jest
+```
+
+El entorno de stories usa Storybook 10 y Vite 8.3.4. Instala las dependencias con `npm ci`.
+
 Ejecutar la suite completa de pruebas:
 
 ```bash
@@ -165,6 +178,20 @@ Ejecutar chequeo de tipos en TypeScript:
 
 ```bash
 npm run typecheck
+```
+
+### Ejecutar Storybook en local
+
+Para explorar visualmente los componentes, probar el cambio dinámico de formas y los temas:
+
+```bash
+npm run storybook
+```
+
+Compilar Storybook estático:
+
+```bash
+npm run build-storybook
 ```
 
 Compilar la librería para distribución (ESM, CJS y `.d.ts`):

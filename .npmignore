@@ -1,0 +1,7 @@
+# Publish only the built library and package documentation.
+*
+!dist/
+!dist/**
+!package.json
+!README.md
+!LICENSE

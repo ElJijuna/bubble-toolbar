@@ -1,5 +1,5 @@
-import { defineConfig } from 'tsup';
 import { copyFileSync, mkdirSync } from 'node:fs';
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/index.ts'],
@@ -16,5 +16,5 @@ export default defineConfig({
     } catch (err) {
       console.warn('Could not copy styles.css:', err);
     }
-  }
+  },
 });
