@@ -2,7 +2,7 @@
     "name": "bubble-toolbar",
     "version": "0.1.0",
     "description": "Floating, responsive, blurred glass toolbar component for React 18 and 19 with group-based circular and pill layouts.",
-    "author": "",
+    "author": "ElJijuna",
     "license": "MIT",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -16,7 +16,8 @@
         "./styles.css": "./dist/styles.css"
     },
     "files": [
-        "dist"
+        "dist",
+        "CHANGELOG.md"
     ],
     "scripts": {
         "build": "tsup",
@@ -30,7 +31,11 @@
         "lint:fix": "eslint . --fix --max-warnings=0",
         "format": "biome check --write .",
         "format:check": "biome check .",
-        "check": "npm run lint && npm run format:check && npm run typecheck && npm test -- --runInBand"
+        "check": "npm run lint && npm run format:check && npm run typecheck && npm test -- --runInBand",
+        "prepack": "npm run build",
+        "release": "node scripts/release.mjs",
+        "release:dry-run": "semantic-release --dry-run --no-ci",
+        "commitlint": "commitlint"
     },
     "peerDependencies": {
         "react": "^18.0.0 || ^19.0.0",
@@ -38,6 +43,14 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^2.5.15",
+        "@commitlint/cli": "^21.2.4",
+        "@commitlint/config-conventional": "^21.2.4",
+        "@semantic-release/changelog": "^7.0.0",
+        "@semantic-release/commit-analyzer": "^13.0.1",
+        "@semantic-release/git": "^11.0.1",
+        "@semantic-release/github": "^12.0.10",
+        "@semantic-release/npm": "^13.2.0",
+        "@semantic-release/release-notes-generator": "^14.1.1",
         "@storybook/addon-docs": "^10.6.2",
         "@storybook/react": "^10.6.2",
         "@storybook/react-vite": "^10.6.2",
@@ -49,16 +62,29 @@
         "@types/react": "^19.0.8",
         "@types/react-dom": "^19.0.3",
         "@vitejs/plugin-react": "^6.1.2",
+        "conventional-changelog-conventionalcommits": "^9.3.1",
         "eslint": "^10.13.0",
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "semantic-release": "^25.0.9",
         "storybook": "^10.6.2",
         "super-configs": "^1.26.1",
         "ts-jest": "^29.2.5",
         "tsup": "^8.3.6",
         "typescript": "^5.7.3",
         "vite": "8.3.4"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ElJijuna/bubble-toolbar.git"
+    },
+    "homepage": "https://eljijuna.github.io/bubble-toolbar/",
+    "bugs": {
+        "url": "https://github.com/ElJijuna/bubble-toolbar/issues"
+    },
+    "publishConfig": {
+        "access": "public"
     }
 }

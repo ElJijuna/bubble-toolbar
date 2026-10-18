@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: React ${{ matrix.react }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        react: ['18', '19']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Validate pull request commits
+        if: github.event_name == 'pull_request' && matrix.react == '19'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npm exec commitlint -- --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+      - name: Use React 18
+        if: matrix.react == '18'
+        run: >-
+          npm install --no-save --package-lock=false
+          react@^18 react-dom@^18 @types/react@^18 @types/react-dom@^18
+      - name: Check lint, formatting, types, and tests
+        if: matrix.react == '19'
+        run: npm run check
+      - name: Check React 18 types and tests
+        if: matrix.react == '18'
+        run: |
+          npm run typecheck
+          npm test -- --runInBand
+      - run: npm run build
+      - name: Build Storybook
+        if: matrix.react == '19'
+        run: npm run build-storybook
+      - name: Check package contents
+        if: matrix.react == '19'
+        run: npm pack --dry-run

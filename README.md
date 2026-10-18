@@ -1,6 +1,6 @@
 # 🫧 Bubble Toolbar
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](./package.json)
+[![npm version](https://img.shields.io/npm/v/bubble-toolbar)](https://www.npmjs.com/package/bubble-toolbar)
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./tsconfig.json)
 [![Storybook](https://img.shields.io/badge/Storybook-10-FF4785?logo=storybook&logoColor=white)](./.storybook/main.ts)
@@ -259,6 +259,56 @@ Preview the npm package contents:
 ```bash
 npm pack --dry-run
 ```
+
+## Releases and deployment
+
+The workflows follow the same release pattern as `react-dockbar` and `super-configs`:
+
+- **CI:** pull requests and pushes to branches other than `main` run type checks, tests, and builds with React 18 and 19. React 19 also runs ESLint, Biome, Storybook, and a package-content check. Pull request commits are validated with commitlint.
+- **npm:** after CI passes on `main`, semantic-release calculates the version, generates `CHANGELOG.md` and GitHub release notes, updates package versions, creates a `vX.Y.Z` tag, and publishes `bubble-toolbar` with provenance.
+- **GitHub Packages:** each new npm release is mirrored as `@eljijuna/bubble-toolbar` from its release tag. The name change happens only in the publishing job.
+- **GitHub Pages:** every validated push to `main` deploys Storybook to [eljijuna.github.io/bubble-toolbar](https://eljijuna.github.io/bubble-toolbar/), even when there is no new package release. Deployment is independent of npm publishing.
+
+### Conventional Commits
+
+Use `type(optional-scope): description` for commits and squash-merge titles:
+
+| Commit | Version change |
+| :--- | :--- |
+| `fix: correct activity cleanup` | Patch |
+| `perf: reduce activity renders` | Patch |
+| `feat: add activity colors` | Minor |
+| `feat!: replace the group API` | Major |
+| Any type with a `BREAKING CHANGE:` footer | Major |
+| `docs:`, `test:`, `chore:`, `ci:`, `build:`, `refactor:`, `style:` without breaking changes | No release by themselves |
+
+The highest applicable change determines the release. Without a previous release tag, semantic-release starts at **1.0.0**. Release commits use `chore(release): X.Y.Z [skip ci]` to avoid a release loop. Do not edit release versions or changelog entries manually.
+
+```bash
+printf 'feat: add activity colors\n' | npm run commitlint
+npm run release:dry-run
+```
+
+The dry run needs access to the GitHub repository and publishing credentials to verify permissions. It does not publish a version. Release tooling uses Node.js 24 in CI; use Node.js 24.15 or newer for local release tooling.
+
+### Repository configuration
+
+- Set the Actions secret `NPM_TOKEN` to an npm granular token with publish access to `bubble-toolbar`, allowing the CI publishing workflow to bypass 2FA. It must belong to an account authorized to publish the package name.
+- Keep **Settings → Pages → Build and deployment → Source** set to **GitHub Actions**.
+- The workflows declare the required `GITHUB_TOKEN` permissions for releases, package publishing, and Pages. If branch protection blocks release commits, allow the release automation to update `main` using an appropriate GitHub App token.
+- The **Release** workflow can also be dispatched manually on `main`. To retry a failed mirror after npm succeeded, rerun the failed GitHub Packages job.
+
+Install the mirror with an npm configuration that routes its scope to GitHub Packages:
+
+```ini
+@eljijuna:registry=https://npm.pkg.github.com
+```
+
+```bash
+npm install @eljijuna/bubble-toolbar
+```
+
+GitHub Packages installation requires GitHub authentication with package read access. Publishing and deployment happen when the workflows run on GitHub; local setup does not publish packages.
 
 ## License
 
