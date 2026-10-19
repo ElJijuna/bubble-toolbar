@@ -1,4 +1,11 @@
-import type { CSSProperties, ForwardedRef, ReactNode, RefObject } from 'react';
+import type {
+  CSSProperties,
+  ForwardedRef,
+  MutableRefObject,
+  ReactNode,
+  Ref,
+  RefObject,
+} from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { BubbleGroup } from '../BubbleGroup';
 import { BubbleArea } from '../components/BubbleArea';
@@ -28,13 +35,14 @@ export const defaultSearchLabels: BubbleSearchLabels = {
 };
 
 const mergeRefs =
-  <V,>(...refs: (ForwardedRef<V> | RefObject<V | null>)[]) =>
+  <V,>(...refs: (Ref<V> | undefined)[]) =>
   (value: V | null) => {
     for (const ref of refs) {
       if (typeof ref === 'function') {
         ref(value);
       } else if (ref) {
-        ref.current = value;
+        // React 18 types mark RefObject.current as read-only; refs are mutable at runtime.
+        (ref as MutableRefObject<V | null>).current = value;
       }
     }
   };
