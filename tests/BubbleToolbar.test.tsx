@@ -3,6 +3,7 @@ import { createRef } from 'react';
 import { BubbleToolbar } from '../src/BubbleToolbar';
 import { BubbleArea } from '../src/components/BubbleArea';
 import { BubbleIconButton } from '../src/components/BubbleIconButton';
+import { getGlassStyles } from '../src/utils/styles';
 
 describe('BubbleToolbar', () => {
   it('renders groups array structure exactly matching user specification', () => {
@@ -116,14 +117,36 @@ describe('BubbleToolbar', () => {
     const group = screen.getByRole('group');
     // Backdrop filter applies blur
     expect(group.style.backdropFilter).toContain('blur(20px)');
-    expect(group.style.border).toContain('1px solid');
+    // jsdom drops var() in shorthand/color properties, so assert the generated value.
+    expect(getGlassStyles('glass', true, 20, true, true).border).toBe(
+      '1px solid var(--bubble-glass-border, rgba(255, 255, 255, 0.4))',
+    );
   });
 
   it('supports dark theme', () => {
     render(<BubbleToolbar theme="dark" groups={[[<span key="1">Item</span>]]} />);
 
-    const group = screen.getByRole('group');
-    expect(group.style.color).toBe('rgb(244, 244, 245)');
+    expect(screen.getByRole('group')).toBeInTheDocument();
+    expect(getGlassStyles('dark', true, 16, true, true)).toMatchObject({
+      backgroundColor: 'var(--bubble-dark-bg, rgba(24, 24, 27, 0.72))',
+      color: 'var(--bubble-dark-fg, #f4f4f5)',
+    });
+  });
+
+  it('keeps original values as token fallbacks for every theme', () => {
+    expect(getGlassStyles('glass', false, 16, true, true)).toMatchObject({
+      backgroundColor: 'var(--bubble-glass-bg-solid, rgba(255, 255, 255, 0.92))',
+      color: 'var(--bubble-glass-fg, #09090b)',
+      boxShadow:
+        'var(--bubble-glass-shadow, 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06))',
+    });
+    expect(getGlassStyles('light', true, 16, true, true)).toMatchObject({
+      backgroundColor: 'var(--bubble-light-bg, rgba(255, 255, 255, 0.75))',
+      border: '1px solid var(--bubble-light-border, rgba(0, 0, 0, 0.08))',
+    });
+    expect(getGlassStyles('auto', true, 16, true, true).color).toBe(
+      'var(--bubble-fg, var(--bubble-light-fg, #18181b))',
+    );
   });
 
   it('forwards ref to the toolbar container element', () => {

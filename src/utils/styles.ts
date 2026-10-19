@@ -28,32 +28,38 @@ export function getGlassStyles(
 ): CSSProperties {
   const blurVal = formatPx(blurAmount);
 
-  // Background and border tint based on theme
+  // Every color reads a token first; fallbacks are the original values.
   let background: string;
   let borderColor: string;
   let color: string;
 
   switch (theme) {
     case 'dark':
-      background = blurred ? 'rgba(24, 24, 27, 0.72)' : 'rgba(24, 24, 27, 0.95)';
-      borderColor = 'rgba(255, 255, 255, 0.12)';
-      color = '#f4f4f5';
+      background = blurred
+        ? 'var(--bubble-dark-bg, rgba(24, 24, 27, 0.72))'
+        : 'var(--bubble-dark-bg-solid, rgba(24, 24, 27, 0.95))';
+      borderColor = 'var(--bubble-dark-border, rgba(255, 255, 255, 0.12))';
+      color = 'var(--bubble-dark-fg, #f4f4f5)';
       break;
     case 'light':
-      background = blurred ? 'rgba(255, 255, 255, 0.75)' : 'rgba(255, 255, 255, 0.95)';
-      borderColor = 'rgba(0, 0, 0, 0.08)';
-      color = '#18181b';
+      background = blurred
+        ? 'var(--bubble-light-bg, rgba(255, 255, 255, 0.75))'
+        : 'var(--bubble-light-bg-solid, rgba(255, 255, 255, 0.95))';
+      borderColor = 'var(--bubble-light-border, rgba(0, 0, 0, 0.08))';
+      color = 'var(--bubble-light-fg, #18181b)';
       break;
     case 'auto':
-      background = 'var(--bubble-bg, rgba(255, 255, 255, 0.75))';
-      borderColor = 'var(--bubble-border, rgba(0, 0, 0, 0.08))';
-      color = 'var(--bubble-fg, #18181b)';
+      background = 'var(--bubble-bg, var(--bubble-light-bg, rgba(255, 255, 255, 0.75)))';
+      borderColor = 'var(--bubble-border, var(--bubble-light-border, rgba(0, 0, 0, 0.08)))';
+      color = 'var(--bubble-fg, var(--bubble-light-fg, #18181b))';
       break;
     default:
       // Neutral luminous frosted glass
-      background = blurred ? 'rgba(255, 255, 255, 0.65)' : 'rgba(255, 255, 255, 0.92)';
-      borderColor = 'rgba(255, 255, 255, 0.4)';
-      color = '#09090b';
+      background = blurred
+        ? 'var(--bubble-glass-bg, rgba(255, 255, 255, 0.65))'
+        : 'var(--bubble-glass-bg-solid, rgba(255, 255, 255, 0.92))';
+      borderColor = 'var(--bubble-glass-border, rgba(255, 255, 255, 0.4))';
+      color = 'var(--bubble-glass-fg, #09090b)';
       break;
   }
 
@@ -61,7 +67,7 @@ export function getGlassStyles(
     typeof shadow === 'string'
       ? shadow
       : shadow
-        ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06)'
+        ? 'var(--bubble-glass-shadow, 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06))'
         : 'none';
 
   return {

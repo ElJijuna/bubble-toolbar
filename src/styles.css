@@ -7,11 +7,26 @@
   --bubble-size-md: 48px;
   --bubble-size-lg: 56px;
   --bubble-blur: 16px;
+  /* Glass theme */
   --bubble-glass-bg: rgba(255, 255, 255, 0.65);
-  --bubble-glass-border: rgba(255, 255, 255, 0.35);
-  --bubble-glass-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --bubble-glass-bg-solid: rgba(255, 255, 255, 0.92);
+  --bubble-glass-border: rgba(255, 255, 255, 0.4);
+  --bubble-glass-fg: #09090b;
+  --bubble-glass-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+  /* Light theme */
+  --bubble-light-bg: rgba(255, 255, 255, 0.75);
+  --bubble-light-bg-solid: rgba(255, 255, 255, 0.95);
+  --bubble-light-border: rgba(0, 0, 0, 0.08);
+  --bubble-light-fg: #18181b;
+  /* Dark theme */
   --bubble-dark-bg: rgba(24, 24, 27, 0.72);
+  --bubble-dark-bg-solid: rgba(24, 24, 27, 0.95);
   --bubble-dark-border: rgba(255, 255, 255, 0.12);
+  --bubble-dark-fg: #f4f4f5;
+  /* Icon buttons */
+  --bubble-button-hover-bg: rgba(0, 0, 0, 0.05);
+  --bubble-button-active-bg: rgba(0, 0, 0, 0.08);
+  --bubble-focus-ring: #3b82f6;
 }
 
 /* Toolbar container */
@@ -104,7 +119,7 @@
 }
 
 .bubble-icon-button:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--bubble-focus-ring, #3b82f6);
   outline-offset: 2px;
 }
 
@@ -120,7 +135,7 @@
   .bubble-toolbar--auto .bubble-group {
     --bubble-bg: var(--bubble-dark-bg);
     --bubble-border: var(--bubble-dark-border);
-    --bubble-fg: #f4f4f5;
+    --bubble-fg: var(--bubble-dark-fg);
   }
 
   .bubble-toolbar--auto .bubble-icon-button:hover {

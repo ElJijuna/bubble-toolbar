@@ -150,15 +150,14 @@ export const BubbleIconButton = forwardRef<HTMLButtonElement, BubbleIconButtonPr
       borderRadius: '50%',
       border: 'none',
       background: active
-        ? 'rgba(0, 0, 0, 0.08)'
+        ? 'var(--bubble-button-active-bg, rgba(0, 0, 0, 0.08))'
         : isHovered
-          ? 'rgba(0, 0, 0, 0.05)'
+          ? 'var(--bubble-button-hover-bg, rgba(0, 0, 0, 0.05))'
           : 'transparent',
       color: 'inherit',
       cursor: 'pointer',
       padding: 0,
       margin: 0,
-      outline: 'none',
       transition: 'background-color 0.15s ease, transform 0.15s ease',
       transform: isHovered ? 'scale(1.06)' : 'scale(1)',
       flexShrink: 0,
