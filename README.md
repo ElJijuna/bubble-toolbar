@@ -155,6 +155,94 @@ Both toolbar and group accept these props; group appearance overrides the toolba
 
 The effect follows circular and pill shapes without changing their dimensions. With `prefers-reduced-motion: reduce`, the border remains visible and static. Browsers without animated custom property support retain a static gradient; browsers without CSS masking retain a static colored border.
 
+## Search and breadcrumb search
+
+`BubbleSearch` is a search bubble: a button that expands into an accessible combobox with async results. `BubbleBreadcrumbSearch` shows the current location as a breadcrumb and turns into the same search when its button is pressed.
+
+```tsx
+import { BubbleBreadcrumbSearch, BubbleToolbar } from 'bubble-toolbar';
+
+const searchPages = async (query: string, signal: AbortSignal) => {
+  const response = await fetch(`/api/pages?q=${encodeURIComponent(query)}`, { signal });
+  return response.json(); // [{ id, title, description? }]
+};
+
+export function Header({ location, navigate }) {
+  return (
+    <BubbleToolbar position="top" style={{ alignItems: 'flex-start' }}>
+      <BubbleToolbar.BreadcrumbSearch
+        items={location} // [{ label: 'Projects', href: '/projects' }, { label: 'Overview' }]
+        onSearch={searchPages}
+        onSelect={(page) => navigate(page.id)}
+        suggestions={recentPages}
+        labels={{ location: 'Current page', placeholder: 'Search pages…' }}
+      />
+    </BubbleToolbar>
+  );
+}
+```
+
+- `onSearch` receives the trimmed, lower-cased query and an `AbortSignal`. The signal is aborted when the query changes, the search closes or the component unmounts, so stale results never replace newer ones. While a search is pending, the group shows the async activity border.
+- Items have a fixed shape, `{ id, title, description? }`, so the listbox layout and keyboard navigation always work.
+- The breadcrumb is controlled: pass the current `items` (usually from your router) and update them in `onSelect`. The last item is the current page and stays visible while parent levels truncate first.
+- Keyboard: ↑ ↓ move through options, Enter selects, Esc closes and returns focus to the button. Clicking or tabbing outside closes the search.
+- Without a breadcrumb, `BubbleSearch` is a circle while closed and expands when opened.
+- In `top` and `static` toolbars the panel opens downward; give the toolbar `alignItems: 'flex-start'` so the other groups stay in place. In `bottom` toolbars it opens upward; use `alignItems: 'flex-end'`.
+- The open/close collapse is applied inline, so the search works without `styles.css`; import it for the default look and the token-driven styles.
+
+## Theming with tokens
+
+Customization goes through CSS custom properties. Structure, layout and behavior stay fixed, and tokens that could break the layout are clamped. Import `bubble-toolbar/styles.css` to get the defaults.
+
+Toolbar tokens, set on `:root` or any ancestor:
+
+| Token | Default |
+| :--- | :--- |
+| `--bubble-glass-bg` / `--bubble-glass-bg-solid` | `rgba(255, 255, 255, 0.65)` / `rgba(255, 255, 255, 0.92)` |
+| `--bubble-glass-border` / `--bubble-glass-fg` | `rgba(255, 255, 255, 0.4)` / `#09090b` |
+| `--bubble-glass-shadow` | Default floating shadow |
+| `--bubble-light-bg` / `-bg-solid` / `-border` / `-fg` | `rgba(255, 255, 255, 0.75)` / `0.95` / `rgba(0, 0, 0, 0.08)` / `#18181b` |
+| `--bubble-dark-bg` / `-bg-solid` / `-border` / `-fg` | `rgba(24, 24, 27, 0.72)` / `0.95` / `rgba(255, 255, 255, 0.12)` / `#f4f4f5` |
+| `--bubble-button-hover-bg` / `--bubble-button-active-bg` | `rgba(0, 0, 0, 0.05)` / `rgba(0, 0, 0, 0.08)` |
+| `--bubble-focus-ring` | `#3b82f6` |
+
+The `blurred` prop picks the `-bg` (translucent) or `-bg-solid` variant. A string `shadow` prop still wins over `--bubble-glass-shadow`.
+
+Search tokens can be passed through the typed `tokens` prop, where numbers become `px` (or `ms` for `duration`), or set as CSS variables:
+
+```tsx
+<BubbleToolbar.Search tokens={{ width: 420, radius: 14, focusRing: '#f97316' }} … />
+```
+
+```css
+.brand-search {
+  --bubble-search-option-active-bg: rgb(249 115 22 / 16%);
+}
+```
+
+| `tokens` key | CSS variable | Default | Guard |
+| :--- | :--- | :--- | :--- |
+| `width` | `--bubble-search-width` | `360px` | Capped at `100vw - 96px` |
+| `radius` | `--bubble-search-radius` | `24px` | |
+| `divider` | `--bubble-search-divider` | `rgb(128 128 128 / 18%)` | |
+| `focusRing` | `--bubble-search-focus-ring` | `#818cf8` | |
+| `optionActiveBg` | `--bubble-search-option-active-bg` | `rgb(129 140 248 / 18%)` | |
+| `optionRadius` | `--bubble-search-option-radius` | `12px` | |
+| `titleSize` | `--bubble-search-title-size` | `13px` | 10–20px |
+| `titleWeight` | `--bubble-search-title-weight` | `600` | |
+| `metaSize` | `--bubble-search-meta-size` | `11px` | 9–16px |
+| `mutedOpacity` | `--bubble-search-muted-opacity` | `0.7` | 0.4–1 |
+| `resultsMaxHeight` | `--bubble-search-results-max-height` | `220px` | Capped at `100dvh - 208px` |
+| `panelPadding` | `--bubble-search-panel-padding` | `8px` | 0–16px |
+| `duration` | `--bubble-search-duration` | `180ms` | 0–600ms |
+| `easing` | `--bubble-search-easing` | `ease` | |
+| `breadcrumbSize` | `--bubble-breadcrumb-size` | `12px` | 10–16px |
+| `breadcrumbSeparatorColor` | `--bubble-breadcrumb-separator-color` | `currentColor` | |
+| `breadcrumbCurrentWeight` | `--bubble-breadcrumb-current-weight` | `500` | |
+| `breadcrumbMutedOpacity` | `--bubble-breadcrumb-muted-opacity` | `0.7` | 0.4–1 |
+
+Unknown `tokens` keys are ignored. The `breadcrumb*` keys only apply to `BubbleBreadcrumbSearch`.
+
 ## Adaptive shapes
 
 | Group content | Shape | Behavior |
@@ -211,7 +299,34 @@ Use the `shape` prop on a group to override its automatic shape.
 | `minWidth` | `number \| string` | `120` | Minimum width in pixels or a CSS length. |
 | `maxWidth` | `number \| string` | `undefined` | Maximum width in pixels or a CSS length. |
 
-All components accept `className`, `style`, and standard attributes for their underlying element. Toolbar, group, and area refs point to a `div`; icon button refs point to a `button`.
+### `<BubbleSearch />` / `<BubbleToolbar.Search />`
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `onSearch` | `(query, signal) => Promise<T[]>` | Required | Async search; `T extends { id, title, description? }`. |
+| `onSelect` | `(item: T) => void` | Required | Called when an option is chosen. |
+| `suggestions` | `T[]` | `[]` | Shown for an empty query and when nothing matches. |
+| `onError` | `(error: unknown) => void` | `undefined` | Search errors other than cancellations. |
+| `open` / `defaultOpen` / `onOpenChange` | `boolean` / `boolean` / `(open) => void` | Uncontrolled, `false` | Controlled or uncontrolled open state. |
+| `debounceMs` | `number` | `0` | Delay before searching. |
+| `labels` | `Partial<BubbleSearchLabels>` | English | Accessible names and visible texts (`group`, `button`, `input`, `listbox`, `placeholder`, `searching`, `noResults`, `suggestions`, `results(count)`, `hint`). |
+| `tokens` | `BubbleSearchTokens` | `undefined` | See [Theming with tokens](#theming-with-tokens). |
+| `className` | `string` | `undefined` | Class for the group, useful to scope tokens. |
+
+### `<BubbleBreadcrumbSearch />` / `<BubbleToolbar.BreadcrumbSearch />`
+
+Accepts every `BubbleSearch` prop, plus:
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `{ label: string; href?: string }[]` | Required | Current location; the last item is the current page. |
+| `separator` | `string` | `'/'` | Text between levels. |
+| `labels.location` | `string` | `'Breadcrumb'` | Accessible name of the breadcrumb navigation. |
+| `tokens` | `BubbleBreadcrumbSearchTokens` | `undefined` | Search tokens plus `breadcrumb*` tokens. |
+
+The search components intentionally accept no `style` and render a fixed structure; refs point to the group `div`.
+
+The toolbar, group, area and icon button accept `className`, `style`, and standard attributes for their underlying element. Toolbar, group, and area refs point to a `div`; icon button refs point to a `button`.
 
 ## Development
 

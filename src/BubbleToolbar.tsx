@@ -3,12 +3,16 @@ import { forwardRef, useMemo } from 'react';
 import { BubbleGroup } from './BubbleGroup';
 import type { BubbleToolbarContextValue } from './context';
 import { BubbleToolbarContext } from './context';
+import { BubbleBreadcrumbSearch } from './search/BubbleBreadcrumbSearch';
+import { BubbleSearch } from './search/BubbleSearch';
 import type { BubbleToolbarProps } from './types';
 import { formatPx } from './utils/styles';
 
 export interface BubbleToolbarComponent
   extends ForwardRefExoticComponent<BubbleToolbarProps & RefAttributes<HTMLDivElement>> {
   Group: typeof BubbleGroup;
+  Search: typeof BubbleSearch;
+  BreadcrumbSearch: typeof BubbleBreadcrumbSearch;
 }
 
 export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
@@ -44,6 +48,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         itemGap,
         bordered,
         shadow,
+        position,
         busy,
         activityColors,
         activityDuration,
@@ -56,6 +61,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         itemGap,
         bordered,
         shadow,
+        position,
         busy,
         activityColors,
         activityDuration,
@@ -141,3 +147,5 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
 
 BubbleToolbar.displayName = 'BubbleToolbar';
 BubbleToolbar.Group = BubbleGroup;
+BubbleToolbar.Search = BubbleSearch;
+BubbleToolbar.BreadcrumbSearch = BubbleBreadcrumbSearch;

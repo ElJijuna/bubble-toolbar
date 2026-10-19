@@ -1,5 +1,10 @@
 import { createContext, useContext } from 'react';
-import type { BubbleActivityProps, BubbleToolbarSize, BubbleToolbarTheme } from './types';
+import type {
+  BubbleActivityProps,
+  BubbleToolbarPosition,
+  BubbleToolbarSize,
+  BubbleToolbarTheme,
+} from './types';
 
 export interface BubbleToolbarContextValue extends BubbleActivityProps {
   size: BubbleToolbarSize;
@@ -9,6 +14,8 @@ export interface BubbleToolbarContextValue extends BubbleActivityProps {
   itemGap: number | string;
   bordered: boolean;
   shadow: boolean | string;
+  /** Toolbar placement; undefined outside a BubbleToolbar. */
+  position?: BubbleToolbarPosition;
 }
 
 export const defaultContextValue: BubbleToolbarContextValue = {
