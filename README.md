@@ -155,6 +155,57 @@ Both toolbar and group accept these props; group appearance overrides the toolba
 
 The effect follows circular and pill shapes without changing their dimensions. With `prefers-reduced-motion: reduce`, the border remains visible and static. Browsers without animated custom property support retain a static gradient; browsers without CSS masking retain a static colored border.
 
+## Live Activities
+
+Like iOS Live Activities: while a task runs, the whole toolbar collapses into a single pill with a spinner; when it finishes, the pill becomes a card with the result and a close button; after its duration (or on close) the toolbar is restored. The groups stay mounted the whole time, so their state (an open search, a counter) is kept.
+
+```tsx
+import { BubbleToolbar, useBubbleLiveActivity } from 'bubble-toolbar';
+
+export function App() {
+  const live = useBubbleLiveActivity({ duration: 4000 });
+
+  const upload = async (files: File[]) => {
+    // Resolves or rejects exactly like the task itself.
+    const result = await live.run(() => api.upload(files), {
+      pending: { title: 'Uploading…' },
+      success: (r) => ({ title: 'Upload complete', description: `${r.count} files ready` }),
+      error: (e) => ({ title: 'Upload failed', description: String(e) }),
+    });
+    return result;
+  };
+
+  return (
+    <>
+      <UploadButton onFiles={upload} />
+      <BubbleToolbar position="top" liveActivity={live}>
+        {/* groups */}
+      </BubbleToolbar>
+    </>
+  );
+}
+```
+
+- `live.run(task, options)` shows the task and returns its own promise. `live.show(content, { duration })` shows a card without a task, and `live.dismiss()` closes the current one.
+- Activities are queued (FIFO). The pill shows `+n` when more are waiting, and a task that already finished goes straight to its card.
+- The pill stays at least `minPendingMs` (600ms by default) so fast tasks do not flicker. `duration: 0` keeps the card until it is closed.
+- The timer pauses while the card is hovered or focused. Esc closes the card. Results are announced through a polite live region, and errors through an alert.
+- If focus was inside the toolbar, it moves to the pill and comes back to the same element afterwards.
+- Inside the toolbar, `useBubbleToolbarLiveActivity()` returns the same controller without passing it down.
+- Content has a fixed shape: `{ title, description?, icon?, tone?: 'neutral' | 'success' | 'error' }`. Texts go in `labels` (`pending`, `success`, `error`, `close`, `group`) and the look in `tokens`, both as `useBubbleLiveActivity` options.
+- With `prefers-reduced-motion`, the toolbar switches without the width morph.
+
+| `tokens` key | CSS variable | Default | Guard |
+| :--- | :--- | :--- | :--- |
+| `compactWidth` | `--bubble-live-compact-width` | `200px` | Capped at `100vw - 32px` |
+| `width` | `--bubble-live-width` | `360px` | Capped at `100vw - 32px` |
+| `radius` | `--bubble-live-radius` | `24px` | |
+| `progressColor` | `--bubble-live-progress-color` | `currentColor` at 40% | |
+| `successColor` / `errorColor` | `--bubble-live-success-color` / `--bubble-live-error-color` | `#22c55e` / `#ef4444` | |
+| `titleSize` | `--bubble-live-title-size` | `13px` | 11–18px |
+| `metaSize` | `--bubble-live-meta-size` | `11px` | 9–14px |
+| `duration` | `--bubble-live-duration` | `320ms` | 0–600ms |
+
 ## Search and breadcrumb search
 
 `BubbleSearch` is a search bubble: a button that expands into an accessible combobox with async results. `BubbleBreadcrumbSearch` shows the current location as a breadcrumb and turns into the same search when its button is pressed.
@@ -270,6 +321,7 @@ Use the `shape` prop on a group to override its automatic shape.
 | `bordered` | `boolean` | `true` | Shows subtle borders. |
 | `shadow` | `boolean \| string` | `true` | Enables the default shadow or supplies a custom CSS shadow. |
 | `ariaLabel` | `string` | `'Toolbar'` | Accessible toolbar label. |
+| `liveActivity` | `BubbleLiveActivityController` | `undefined` | Controller from `useBubbleLiveActivity`; see [Live Activities](#live-activities). |
 
 ### `<BubbleGroup />` / `<BubbleToolbar.Group />`
 

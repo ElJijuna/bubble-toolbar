@@ -106,6 +106,12 @@ export interface BubbleToolbarProps
    * @default 'Toolbar'
    */
   ariaLabel?: string;
+
+  /**
+   * Controller from useBubbleLiveActivity. While an activity is shown, the groups collapse
+   * into a single pill (and then a card) and are restored afterwards, keeping their state.
+   */
+  liveActivity?: BubbleLiveActivityController;
 }
 
 export interface BubbleGroupProps extends HTMLAttributes<HTMLDivElement>, BubbleActivityProps {
@@ -317,4 +323,88 @@ export interface BubbleBreadcrumbSearchProps<T extends BubbleSearchItem = Bubble
   separator?: string;
   labels?: Partial<BubbleBreadcrumbSearchLabels>;
   tokens?: BubbleBreadcrumbSearchTokens;
+}
+
+/** Content of a Live Activity. Its shape is fixed so the pill and the card keep their layout. */
+export interface BubbleLiveContent {
+  title: string;
+  description?: string;
+  /** Replaces the default spinner / outcome icon. */
+  icon?: ReactNode;
+  /** @default 'success' after a resolved task, 'error' after a rejected one, otherwise 'neutral' */
+  tone?: 'neutral' | 'success' | 'error';
+}
+
+export type BubbleLiveState = 'idle' | 'compact' | 'expanded';
+
+export interface BubbleLiveRunOptions<T> {
+  /** Shown in the compact pill while the task runs. Defaults to `labels.pending`. */
+  pending?: BubbleLiveContent;
+  /** Card shown when the task resolves. Defaults to `labels.success`. */
+  success?: (value: T) => BubbleLiveContent;
+  /** Card shown when the task rejects. Defaults to `labels.error`. */
+  error?: (error: unknown) => BubbleLiveContent;
+  /** Milliseconds the card stays visible; 0 keeps it until dismissed. Defaults to the controller's. */
+  duration?: number;
+}
+
+/** Texts of the Live Activity. */
+export interface BubbleLiveLabels {
+  /** @default 'Working…' */
+  pending: string;
+  /** @default 'Done' */
+  success: string;
+  /** @default 'Something went wrong' */
+  error: string;
+  /** Accessible name of the close button. @default 'Dismiss' */
+  close: string;
+  /** Accessible name of the live group. @default 'Live activity' */
+  group: string;
+}
+
+/**
+ * Visual tokens of the Live Activity, written as `--bubble-live-*` custom properties.
+ * Numbers are px for lengths and ms for `duration`.
+ */
+export interface BubbleLiveTokens {
+  /** Width of the compact pill, capped to the viewport. @default 200px */
+  compactWidth?: number | string;
+  /** Width of the card, capped to the viewport. @default 360px */
+  width?: number | string;
+  /** Corner radius of the card. @default 24px */
+  radius?: number | string;
+  /** Remaining-time bar. @default currentColor at 40% */
+  progressColor?: string;
+  /** @default #22c55e */
+  successColor?: string;
+  /** @default #ef4444 */
+  errorColor?: string;
+  /** Title size, clamped to 11–18px. @default 13px */
+  titleSize?: number | string;
+  /** Description size, clamped to 9–14px. @default 11px */
+  metaSize?: number | string;
+  /** Morph duration, clamped to 0–600ms. @default 320ms */
+  duration?: number | string;
+}
+
+export interface BubbleLiveActivityOptions {
+  /** Default card duration in ms; 0 keeps cards until dismissed. @default 4000 */
+  duration?: number;
+  /** Minimum time the compact pill stays, so fast tasks do not flicker. @default 600 */
+  minPendingMs?: number;
+  labels?: Partial<BubbleLiveLabels>;
+  tokens?: BubbleLiveTokens;
+}
+
+/** Controller returned by useBubbleLiveActivity. Stable across renders; usable from anywhere. */
+export interface BubbleLiveActivityController {
+  /** Shows the task in the toolbar and returns its own promise (value or original error). */
+  run: <T>(task: () => Promise<T> | T, options?: BubbleLiveRunOptions<T>) => Promise<T>;
+  /** Queues a card without a task. */
+  show: (content: BubbleLiveContent, options?: { duration?: number }) => void;
+  /** Closes the current activity and moves to the next queued one. */
+  dismiss: () => void;
+  /** Current state, for tests or custom UI. Not reactive; subscribe for updates. */
+  readonly state: BubbleLiveState;
+  subscribe: (listener: () => void) => () => void;
 }

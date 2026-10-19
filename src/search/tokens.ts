@@ -1,9 +1,8 @@
-import type { CSSProperties } from 'react';
 import type { BubbleBreadcrumbSearchTokens } from '../types';
+import type { TokenMap } from '../utils/tokens';
+import { createTokenStyle } from '../utils/tokens';
 
-type Unit = 'px' | 'ms' | '';
-
-const TOKENS: Record<keyof BubbleBreadcrumbSearchTokens, readonly [string, Unit]> = {
+const TOKENS: TokenMap<keyof BubbleBreadcrumbSearchTokens> = {
   width: ['--bubble-search-width', 'px'],
   radius: ['--bubble-search-radius', 'px'],
   divider: ['--bubble-search-divider', ''],
@@ -24,18 +23,5 @@ const TOKENS: Record<keyof BubbleBreadcrumbSearchTokens, readonly [string, Unit]
   breadcrumbMutedOpacity: ['--bubble-breadcrumb-muted-opacity', ''],
 };
 
-/** Converts known tokens to CSS custom properties; unknown keys are ignored. */
-export function tokensToStyle(tokens: BubbleBreadcrumbSearchTokens | undefined): CSSProperties {
-  const style: Record<string, string> = {};
-  if (!tokens) {
-    return style;
-  }
-  for (const [key, value] of Object.entries(tokens)) {
-    if (!Object.hasOwn(TOKENS, key) || value === undefined || value === null) {
-      continue;
-    }
-    const [name, unit] = TOKENS[key as keyof BubbleBreadcrumbSearchTokens];
-    style[name] = typeof value === 'number' && unit ? `${value}${unit}` : String(value);
-  }
-  return style;
-}
+/** Converts known search tokens to CSS custom properties; unknown keys are ignored. */
+export const tokensToStyle = createTokenStyle(TOKENS);

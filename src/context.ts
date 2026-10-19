@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import type {
   BubbleActivityProps,
+  BubbleLiveActivityController,
   BubbleToolbarPosition,
   BubbleToolbarSize,
   BubbleToolbarTheme,
@@ -16,6 +17,8 @@ export interface BubbleToolbarContextValue extends BubbleActivityProps {
   shadow: boolean | string;
   /** Toolbar placement; undefined outside a BubbleToolbar. */
   position?: BubbleToolbarPosition;
+  /** Live Activity controller of the toolbar, if any. */
+  liveActivity?: BubbleLiveActivityController;
 }
 
 export const defaultContextValue: BubbleToolbarContextValue = {

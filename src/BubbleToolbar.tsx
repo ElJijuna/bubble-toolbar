@@ -1,8 +1,9 @@
 import type { CSSProperties, ForwardRefExoticComponent, RefAttributes } from 'react';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo, useRef } from 'react';
 import { BubbleGroup } from './BubbleGroup';
 import type { BubbleToolbarContextValue } from './context';
 import { BubbleToolbarContext } from './context';
+import { LiveSlot } from './live/BubbleLiveActivity';
 import { BubbleBreadcrumbSearch } from './search/BubbleBreadcrumbSearch';
 import { BubbleSearch } from './search/BubbleSearch';
 import type { BubbleToolbarProps } from './types';
@@ -35,6 +36,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       className = '',
       style,
       ariaLabel = 'Toolbar',
+      liveActivity,
       ...rest
     },
     ref,
@@ -49,6 +51,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         bordered,
         shadow,
         position,
+        liveActivity,
         busy,
         activityColors,
         activityDuration,
@@ -62,10 +65,24 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         bordered,
         shadow,
         position,
+        liveActivity,
         busy,
         activityColors,
         activityDuration,
       ],
+    );
+
+    const toolbarRef = useRef<HTMLDivElement | null>(null);
+    const setRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        toolbarRef.current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref],
     );
 
     // Compute positioning styles
@@ -122,23 +139,35 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       .filter(Boolean)
       .join(' ');
 
+    const content = (
+      <>
+        {groups && groups.length > 0
+          ? groups.map((groupItems, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: The groups array API identifies groups by position; use compound children for keyed groups.
+              <BubbleGroup key={index}>{groupItems}</BubbleGroup>
+            ))
+          : null}
+        {children}
+      </>
+    );
+
     return (
       <BubbleToolbarContext.Provider value={contextValue}>
         <div
-          ref={ref}
+          ref={setRef}
           role="toolbar"
           aria-label={ariaLabel}
           className={combinedClassName}
           style={containerStyles}
           {...rest}
         >
-          {groups && groups.length > 0
-            ? groups.map((groupItems, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: The groups array API identifies groups by position; use compound children for keyed groups.
-                <BubbleGroup key={index}>{groupItems}</BubbleGroup>
-              ))
-            : null}
-          {children}
+          {liveActivity ? (
+            <LiveSlot controller={liveActivity} toolbarRef={toolbarRef}>
+              {content}
+            </LiveSlot>
+          ) : (
+            content
+          )}
         </div>
       </BubbleToolbarContext.Provider>
     );

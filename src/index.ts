@@ -6,6 +6,7 @@ export { BubbleToolbar } from './BubbleToolbar';
 export { BubbleArea } from './components/BubbleArea';
 export { BubbleIconButton } from './components/BubbleIconButton';
 export { BubbleToolbarContext, useBubbleToolbar } from './context';
+export { useBubbleLiveActivity, useBubbleToolbarLiveActivity } from './live/useBubbleLiveActivity';
 export { BubbleBreadcrumbSearch } from './search/BubbleBreadcrumbSearch';
 export { BubbleSearch } from './search/BubbleSearch';
 export type {
@@ -17,6 +18,13 @@ export type {
   BubbleBreadcrumbSearchTokens,
   BubbleGroupProps,
   BubbleIconButtonProps,
+  BubbleLiveActivityController,
+  BubbleLiveActivityOptions,
+  BubbleLiveContent,
+  BubbleLiveLabels,
+  BubbleLiveRunOptions,
+  BubbleLiveState,
+  BubbleLiveTokens,
   BubbleSearchItem,
   BubbleSearchLabels,
   BubbleSearchProps,
