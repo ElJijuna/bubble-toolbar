@@ -22,11 +22,15 @@ export function formatPx(val: number | string): string {
 export function getGlassStyles(
   theme: BubbleToolbarTheme,
   blurred: boolean,
-  blurAmount: number | string,
+  blurAmount: number | string | undefined,
   bordered: boolean,
   shadow: boolean | string,
 ): CSSProperties {
-  const blurVal = formatPx(blurAmount);
+  // Without an explicit amount the --bubble-blur token decides; negatives are invalid CSS.
+  const blurVal =
+    blurAmount === undefined
+      ? 'var(--bubble-blur, 16px)'
+      : formatPx(typeof blurAmount === 'number' ? Math.max(0, blurAmount) : blurAmount);
 
   // Every color reads a token first; fallbacks are the original values.
   let background: string;
@@ -49,7 +53,9 @@ export function getGlassStyles(
       color = 'var(--bubble-light-fg, #18181b)';
       break;
     case 'auto':
-      background = 'var(--bubble-bg, var(--bubble-light-bg, rgba(255, 255, 255, 0.75)))';
+      background = blurred
+        ? 'var(--bubble-bg, var(--bubble-light-bg, rgba(255, 255, 255, 0.75)))'
+        : 'var(--bubble-bg-solid, var(--bubble-light-bg-solid, rgba(255, 255, 255, 0.95)))';
       borderColor = 'var(--bubble-border, var(--bubble-light-border, rgba(0, 0, 0, 0.08)))';
       color = 'var(--bubble-fg, var(--bubble-light-fg, #18181b))';
       break;
@@ -77,6 +83,9 @@ export function getGlassStyles(
     border: bordered ? `1px solid ${borderColor}` : 'none',
     boxShadow,
     color,
-    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+    // backdrop-filter is left out: animating a blur is expensive.
+    transitionProperty: 'background-color, border-color, box-shadow, color',
+    transitionDuration: '0.25s',
+    transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
   };
 }

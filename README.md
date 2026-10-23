@@ -249,6 +249,7 @@ Toolbar tokens, set on `:root` or any ancestor:
 
 | Token | Default |
 | :--- | :--- |
+| `--bubble-blur` | `16px` (ignored when `blurAmount` is set) |
 | `--bubble-glass-bg` / `--bubble-glass-bg-solid` | `rgba(255, 255, 255, 0.65)` / `rgba(255, 255, 255, 0.92)` |
 | `--bubble-glass-border` / `--bubble-glass-fg` | `rgba(255, 255, 255, 0.4)` / `#09090b` |
 | `--bubble-glass-shadow` | Default floating shadow |
@@ -315,7 +316,7 @@ Use the `shape` prop on a group to override its automatic shape.
 | `theme` | `'glass' \| 'light' \| 'dark' \| 'auto'` | `'glass'` | Visual theme. |
 | `size` | `'sm' \| 'md' \| 'lg' \| number` | `'md'` | Group height and circle diameter: 40px, 48px, 56px, or a custom pixel value. |
 | `blurred` | `boolean` | `true` | Enables background blur. |
-| `blurAmount` | `number \| string` | `16` | Blur radius in pixels or a CSS length. |
+| `blurAmount` | `number \| string` | `--bubble-blur` | Blur radius in pixels or a CSS length. Overrides the `--bubble-blur` token; negative numbers become `0`. |
 | `groupGap` | `number \| string` | `8` | Space between groups, in pixels or a CSS length. |
 | `itemGap` | `number \| string` | `8` | Space between children within a pill. |
 | `bordered` | `boolean` | `true` | Shows subtle borders. |

@@ -149,6 +149,33 @@ describe('BubbleToolbar', () => {
     );
   });
 
+  it('uses the --bubble-blur token when blurAmount is omitted', () => {
+    expect(getGlassStyles('glass', true, undefined, true, true).backdropFilter).toBe(
+      'blur(var(--bubble-blur, 16px)) saturate(180%)',
+    );
+  });
+
+  it('accepts CSS lengths and clamps negative blur amounts', () => {
+    expect(getGlassStyles('glass', true, '1rem', true, true).backdropFilter).toBe(
+      'blur(1rem) saturate(180%)',
+    );
+    expect(getGlassStyles('glass', true, -4, true, true).backdropFilter).toBe(
+      'blur(0px) saturate(180%)',
+    );
+  });
+
+  it('uses a solid background for the auto theme when blur is off', () => {
+    expect(getGlassStyles('auto', false, 16, true, true).backgroundColor).toBe(
+      'var(--bubble-bg-solid, var(--bubble-light-bg-solid, rgba(255, 255, 255, 0.95)))',
+    );
+  });
+
+  it('does not transition backdrop-filter', () => {
+    const styles = getGlassStyles('glass', true, 16, true, true);
+    expect(styles.transition).toBeUndefined();
+    expect(styles.transitionProperty).not.toContain('backdrop-filter');
+  });
+
   it('forwards ref to the toolbar container element', () => {
     const ref = createRef<HTMLDivElement>();
     render(<BubbleToolbar ref={ref} groups={[[<span key="1">Item</span>]]} />);

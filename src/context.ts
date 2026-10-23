@@ -11,7 +11,8 @@ export interface BubbleToolbarContextValue extends BubbleActivityProps {
   size: BubbleToolbarSize;
   theme: BubbleToolbarTheme;
   blurred: boolean;
-  blurAmount: number | string;
+  /** Undefined falls back to the --bubble-blur token. */
+  blurAmount?: number | string;
   itemGap: number | string;
   bordered: boolean;
   shadow: boolean | string;
@@ -25,7 +26,6 @@ export const defaultContextValue: BubbleToolbarContextValue = {
   size: 'md',
   theme: 'glass',
   blurred: true,
-  blurAmount: 16,
   itemGap: 8,
   bordered: true,
   shadow: true,

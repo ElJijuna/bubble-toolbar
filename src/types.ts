@@ -62,8 +62,8 @@ export interface BubbleToolbarProps
   blurred?: boolean;
 
   /**
-   * Amount of backdrop blur in pixels or CSS string.
-   * @default 16
+   * Amount of backdrop blur in pixels or CSS string. Negative numbers are clamped to 0.
+   * When omitted, the `--bubble-blur` CSS token is used (16px by default).
    */
   blurAmount?: number | string;
 

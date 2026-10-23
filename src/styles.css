@@ -134,6 +134,7 @@
 @media (prefers-color-scheme: dark) {
   .bubble-toolbar--auto .bubble-group {
     --bubble-bg: var(--bubble-dark-bg);
+    --bubble-bg-solid: var(--bubble-dark-bg-solid);
     --bubble-border: var(--bubble-dark-border);
     --bubble-fg: var(--bubble-dark-fg);
   }

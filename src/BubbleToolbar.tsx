@@ -25,7 +25,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       theme = 'glass',
       size = 'md',
       blurred = true,
-      blurAmount = 16,
+      blurAmount,
       groupGap = 8,
       itemGap = 8,
       bordered = true,
