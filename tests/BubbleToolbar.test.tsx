@@ -82,7 +82,8 @@ describe('BubbleToolbar', () => {
 
     const toolbar = screen.getByRole('toolbar');
     expect(toolbar.style.position).toBe('fixed');
-    expect(toolbar.style.bottom).toBe('24px');
+    expect(toolbar.style.bottom).toBe('-4px');
+    expect(parseFloat(toolbar.style.bottom) + parseFloat(toolbar.style.padding)).toBe(28);
     expect(toolbar.style.left).toBe('50%');
     expect(toolbar.style.transform).toBe('translateX(-50%)');
     expect(toolbar.style.zIndex).toBe('1000');
@@ -93,7 +94,8 @@ describe('BubbleToolbar', () => {
 
     const toolbar = screen.getByRole('toolbar');
     expect(toolbar.style.position).toBe('fixed');
-    expect(toolbar.style.top).toBe('24px');
+    expect(toolbar.style.top).toBe('-4px');
+    expect(parseFloat(toolbar.style.top) + parseFloat(toolbar.style.padding)).toBe(28);
     expect(toolbar.style.bottom).toBe('');
   });
 

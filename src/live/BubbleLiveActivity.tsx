@@ -112,7 +112,14 @@ export const LiveSlot = ({ controller, toolbarRef, children }: LiveSlotProps) =>
     if (active && (visual === 'idle' || visual === 'leave')) {
       if (visual === 'idle') {
         const toolbar = toolbarRef.current;
-        fromWidth.current = toolbar ? Math.max(0, toolbar.getBoundingClientRect().width - 8) : 0;
+        const toolbarStyle = toolbar ? getComputedStyle(toolbar) : null;
+        const horizontalPadding = toolbarStyle
+          ? (parseFloat(toolbarStyle.paddingLeft) || 0) +
+            (parseFloat(toolbarStyle.paddingRight) || 0)
+          : 0;
+        fromWidth.current = toolbar
+          ? Math.max(0, toolbar.getBoundingClientRect().width - horizontalPadding)
+          : 0;
         const focused = document.activeElement;
         savedFocus.current =
           focused instanceof HTMLElement && groupsRef.current?.contains(focused) ? focused : null;

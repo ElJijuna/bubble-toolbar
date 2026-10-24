@@ -85,13 +85,13 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       [ref],
     );
 
-    // Compute positioning styles
+    // Keep bubbles at their original viewport offset as the shadow gutter grows from 4px to 32px.
     const getPositionStyles = (): CSSProperties => {
       switch (position) {
         case 'bottom':
           return {
             position: 'fixed',
-            bottom: '24px',
+            bottom: '-4px',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 1000,
@@ -99,7 +99,7 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
         case 'top':
           return {
             position: 'fixed',
-            top: '24px',
+            top: '-4px',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 1000,
@@ -121,7 +121,8 @@ export const BubbleToolbar = forwardRef<HTMLDivElement, BubbleToolbarProps>(
       maxWidth: 'calc(100vw - 32px)',
       overflowX: 'auto',
       overflowY: 'hidden',
-      padding: '4px',
+      // Scroll containers clip shadows; leave room for their falloff and the hover lift.
+      padding: '32px',
       boxSizing: 'border-box',
       scrollbarWidth: 'none', // Firefox
       msOverflowStyle: 'none', // IE/Edge

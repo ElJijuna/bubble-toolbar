@@ -49,7 +49,7 @@
 /* Positions */
 .bubble-toolbar--bottom {
   position: fixed;
-  bottom: 24px;
+  bottom: -4px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -57,7 +57,7 @@
 
 .bubble-toolbar--top {
   position: fixed;
-  top: 24px;
+  top: -4px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
