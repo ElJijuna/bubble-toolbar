@@ -69,12 +69,24 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Scope the mirror package
+        env:
+          RELEASE_VERSION: ${{ needs.release.outputs.version }}
         run: |
           npm pkg set name=@eljijuna/bubble-toolbar
+          npm pkg set "version=$RELEASE_VERSION"
           npm pkg delete publishConfig.provenance
           npm pkg set publishConfig.registry=https://npm.pkg.github.com
       - name: Publish mirror
-        run: npm publish --ignore-scripts
+        run: |
+          PACKAGE_SPEC=$(node -p 'const p = require("./package.json"); `${p.name}@${p.version}`')
+          if npm view "$PACKAGE_SPEC" version --json --registry=https://npm.pkg.github.com > "$RUNNER_TEMP/mirror-version.json"; then
+            echo "$PACKAGE_SPEC already exists in GitHub Packages; skipping."
+          elif jq -e '.error.code == "E404"' "$RUNNER_TEMP/mirror-version.json" > /dev/null; then
+            npm publish --ignore-scripts --registry=https://npm.pkg.github.com
+          else
+            echo "Could not check the mirror version in GitHub Packages."
+            exit 1
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: 'false'
